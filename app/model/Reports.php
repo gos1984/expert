@@ -8,14 +8,9 @@ class Reports extends Model{
 
 	use Page;
 	use Defense;
-	private $user;
 
 	public function __construct() {
 		parent::__construct();
-		$this->user = array(
-			'login' => 	$this->defenseStr($_SESSION['login']),
-			'role' 	=>	$this->defenseStr($_SESSION['role'])
-		);
 	}
 
 	public function getReportsAll() {

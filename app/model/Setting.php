@@ -5,16 +5,10 @@ use core\traits\{Defense,Page};
 use PDO;
 
 class Setting extends Model{
-	use Defense;
-	use Page;
-	private $user;
+	use Defense, Page;
 	
 	public function __construct() {
 		parent::__construct();
-		$this->user = array(
-			'login' => 	$this->defenseStr($_SESSION['login']),
-			'role' 	=>	$this->defenseStr($_SESSION['role'])
-		);
 	}
 
 	function getSetting() {
@@ -26,7 +20,7 @@ class Setting extends Model{
 			hours_for_checking
 		FROM setup")->fetch(PDO::FETCH_ASSOC);
 		$data = array(
-			'page' => $this->getPage($this->user['login'], $this->user['role']),
+			'page' => $this->getPage(),
 			'setting' => $setting,
 			'title' => array(
 				'percent_vcc' => 'Процент вероятности отправки теста на перепроверку',

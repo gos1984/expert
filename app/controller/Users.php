@@ -23,7 +23,10 @@ class Users extends Controller{
 
 	function show() {
 		$data = $this->model->getShow();
-		return $data;
+	}
+
+	function edit() {
+		$this->model->setEdit($_GET['action']);
 	}
 }
 ?>

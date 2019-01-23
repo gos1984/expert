@@ -8,14 +8,9 @@ class Personal extends Model{
 	use Defense;
 	use Level;
 	use Page;
-	private $user;
 	
 	public function __construct() {
 		parent::__construct();
-		$this->user = array(
-			'login' => 	$this->defenseStr($_SESSION['login']),
-			'role' 	=>	$this->defenseStr($_SESSION['role'])
-		);
 	}
 
 	function getInfo() {

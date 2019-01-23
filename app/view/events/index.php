@@ -6,7 +6,7 @@
 					<div class="th"><a href="<?php echo '/events'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a></div>
 				<?php } ?>
 				<div class="td"><button class="reset">Сбросить</button>
-					<a href="/events/events/show?type=json" class="button new_events">Добавить случай</a></div>
+					<a href="/events/show?type=json" class="button new_events">Добавить случай</a></div>
 			</div>
 		</div>
 		<div class="tbody">
@@ -33,9 +33,9 @@
 					<div class="td"><input type="text" name="image_max_count_level1" value="<?php echo $event['image_max_count_level1']; ?>"></div>
 					<div class="td"><input type="text" name="image_max_count_level2" value="<?php echo $event['image_max_count_level2']; ?>"></div>
 					<div class="td">
-						<a href="<?php echo "/events/events/show?type=json&id_event={$event['id']}";?>" class="button more">Подробнее</a>
+						<a href="<?php echo "/events/show?type=json&id_event={$event['id']}";?>" class="button more">Подробнее</a>
 						<button class="save">Сохранить</button>
-						<a class="button del red" href="/events/events/edit?action=del&id_event=<?php echo $event['id']; ?>">Удалить</a>
+						<a class="button del red" href="/events/edit?action=del&id_event=<?php echo $event['id']; ?>">Удалить</a>
 						<span class="result"></span>
 					</div>
 				</form>
@@ -47,7 +47,7 @@
 	<button class="close">X</button>
 	<div class="wrap_popup">
 		<div id="testing">
-			<form class="edit_form"  action="javascript:void(null);" data-href="/events/events/edit?action=update&full=true">
+			<form class="edit_form"  action="javascript:void(null);" data-href="/events/edit?action=update&full=true">
 				<div class="container">
 					<div class="block">
 						<h3>Случай</h3>

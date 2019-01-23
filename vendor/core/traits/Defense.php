@@ -9,7 +9,7 @@ trait Defense {
 	} // защита строки (удаление строк, слэшей и пробелов с краев)
 
 	function defenseSQL($str,$null = null) {
-		return !empty($str) ? '\''.addslashes($this->defense($str)).'\'' : $null;
+		return !empty($str) ? '\''.addslashes($this->defenseStr($str)).'\'' : $null;
 	}
 	
 }

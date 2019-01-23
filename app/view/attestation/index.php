@@ -6,7 +6,7 @@
 		<div class="thead">
 			<div class="tr">
 				<?php foreach($data['title'] as $key => $val) { ?>
-					<div class="th"><a href="<?php echo '/attestation/attests'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a></div>
+					<div class="th"><a href="<?php echo '/attestation'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a></div>
 				<?php } ?>
 				<!-- <th>Уровень</th> -->
 				<div class="td"><button class="reset">Сбросить</button></div>
@@ -23,7 +23,7 @@
 					<div class="td level"><?php echo $attest['level']; ?></div>
 					<div class="td"><?php echo $attest['price']; ?></div>
 					<div class="td"><?php echo $attest['active_days']; ?></div>
-					<div class="td"><a class="button test more" href="<?php echo "/attestation/attests/show?type=json&id_attest={$attest['attest_id']}&level={$attest['level']}"; ?>">Пройти</a></div>
+					<div class="td"><a class="button test more" href="<?php echo "/attestation/show?type=json&id_attest={$attest['attest_id']}&level={$attest['level']}"; ?>">Пройти</a></div>
 				</div>
 			<?php } ?>
 		</div>
@@ -42,7 +42,7 @@
 			</div>
 			<div class="block">
 				<h3>2. Загрузите изображения</h3>
-				<form id="result_testing" class="test" action="javascript:void(null);" data-href="/attestation/attests/attests?action=testing">
+				<form id="result_testing" class="test" action="javascript:void(null);" data-href="/attestation/edit?action=testing">
 					<input type="hidden" name="login" value="<?php echo $_SESSION['login']; ?>">
 					<div class="files">
 					</div>

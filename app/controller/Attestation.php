@@ -29,8 +29,11 @@ class Attestation extends Controller{
 	}
 
 	function show() {
-		$data = $this->model->get_show();
-		return $data;
+		$this->model->getShow();
+	}
+
+	function edit() {
+		$this->model->setAttests($_GET['action']);
 	}
 }
 ?>

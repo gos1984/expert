@@ -16,5 +16,9 @@ class Setting extends Controller{
 		$data = $this->model->getSetting();
 		$this->view->output("index",$data);
 	}
+
+	public function edit() {
+		$this->model->setSetting($_GET['action']);
+	}
 }
 ?>

@@ -16,5 +16,9 @@ class Directory extends Controller{
 		$data = $this->model->getDirectory();
 		$this->view->output("index",$data);
 	}
+
+	public function edit() {
+		$this->model->setDirectory();
+	}
 }
 ?>

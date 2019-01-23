@@ -1,26 +1,17 @@
 <?php
 namespace app\model;
 use core\Model;
-use core\traits\{Defense,Modality,Ssapm,Page};
+use core\traits\{Defense,Modality,Ssapm,Page, Sort};
 use PDO;
 
 class Attestation extends Model{
-	use Defense;
-	use Modality;
-	use Ssapm;
-	use Page;
-	private $user;
+	use Defense, Modality, Ssapm, Page, Sort;
 	
 	public function __construct() {
 		parent::__construct();
-		$this->user = array(
-			'login' => 	$this->defenseStr($_SESSION['login']),
-			'role' 	=>	$this->defenseStr($_SESSION['role'])
-		);
 	}
 
 	public function getAttestsAll() {
-		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY attest_id ASC";
 		$a = $this->db->query("SELECT
 			1 AS level,
 			a.id AS attest_id,
@@ -114,7 +105,7 @@ class Attestation extends Model{
 			JOIN exam e ON e.attest_id = a.id
 			AND e.login = '{$this->user['login']}'
 			AND e.level = 2
-		) tf ON tf.id = a.id WHERE a.public = 1".$sort);
+		) tf ON tf.id = a.id WHERE a.public = 1".$this->getSort('attest_id'));
 		while ($row = $a->fetch(PDO::FETCH_ASSOC)) {
 			$attests['attest'][] = $row;
 		}
@@ -216,7 +207,6 @@ class Attestation extends Model{
 
 	public function getResultsAll() {
 		$results = null;
-		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY id ASC";
 		$r = $this->db->query("SELECT
 			e.id,
 			e.login,
@@ -236,7 +226,7 @@ class Attestation extends Model{
 			FROM exam e
 			INNER JOIN attest a ON a.id = e.attest_id
 			INNER JOIN exam_state s ON s.id = e.state_id
-			WHERE e.login = '{$this->user['login']}'".$sort);
+			WHERE e.login = '{$this->user['login']}'".$this->getSort('id'));
 		while ($row = $r->fetch(PDO::FETCH_ASSOC)) {
 			if(!empty($row)) {
 				$results['result'][] = $row;
@@ -292,27 +282,27 @@ class Attestation extends Model{
 			if(isset($_GET['id_attest'])) {
 				switch($_GET['type']) {
 					case 'json' :
-					echo json_encode($this->get_attest_one($_GET['id_attest'],$_GET['level']), true);
+					echo json_encode($this->getAttest($_GET['id_attest'],$_GET['level']), true);
 					break;
 				}
 			}
 			if(!empty($_GET['id_result'])) {
 				switch($_GET['type']) {
 					case 'json' :
-					echo json_encode($this->get_result_one($_GET['id_result']), true);
+					echo json_encode($this->getResult($_GET['id_result']), true);
 					break;
 				}
 			}
 		}
 	}
 
-	public function set_attests($action) {
+	public function setAttests($action) {
 		if($action == 'testing') {
-			$this->user['login'] 				= $this->defense($_POST['login']);
-			$attest_id 			= $this->defense($_POST['attest_id']);
+			$this->user['login'] = $this->defenseStr($_POST['login']);
+			$attest_id 			= $this->defenseStr($_POST['attest_id']);
 			$state_id 			= 2;
-			$level 				= $this->defense($_POST['level']);
-			$attested_comment 	= $this->add_sql($_POST['attested_comment'],'NULL');
+			$level 				= $this->defenseStr($_POST['level']);
+			$attested_comment 	= $this->defenseSQL($_POST['attested_comment'],'NULL');
 
 			$this->db->exec("INSERT INTO exam(
 				login,
@@ -341,7 +331,7 @@ class Attestation extends Model{
 							preg_match('/(.\w{3})$/',$_FILES['img']['name'][$i],$type);
 
 							$name_file = $i.$type[0];
-							$dir = "/img/testing/{$this->user['login']}/$attest_id/$exam/";
+							$dir = "/app/template/img/testing/{$this->user['login']}/$attest_id/$exam/";
 							if(is_dir($_SERVER['DOCUMENT_ROOT'].$dir)) {
 								$uploadfile = $_SERVER['DOCUMENT_ROOT'].$dir;
 							} else {
@@ -355,8 +345,8 @@ class Attestation extends Model{
 						}
 					}
 				}
-				$comment = $this->add_sql($_POST['comment'][$i],'NULL');
-				$file = $this->add_sql($file,'NULL');
+				$comment = $this->defenseSQL($_POST['comment'][$i],'NULL');
+				$file = $this->defenseSQL($file,'NULL');
 				$this->db->exec("INSERT INTO exam_image (
 					attested_comment,
 					exam_id,
@@ -370,19 +360,19 @@ class Attestation extends Model{
 			}
 		}
 
-		if($action == 'validation') {
-			$this->user['login'] = $this->defense($_POST['login']);
-			$user_result = $this->defense($_SESSION['login']);
-			$exam = $this->defense($_POST['exam']);
-			$level = $this->defense($_POST['level']);
-			$attest_id 	= $this->defense($_POST['attest_id']);
-			$expert_comment = $this->add_sql($_POST['expert_comment'],'NULL');
+		if($action == 'check') {
+			$this->user['login'] = $this->defenseStr($_POST['login']);
+			$user_result = $this->defenseStr($_SESSION['login']);
+			$exam = $this->defenseStr($_POST['exam']);
+			$level = $this->defenseStr($_POST['level']);
+			$attest_id 	= $this->defenseStr($_POST['attest_id']);
+			$expert_comment = $this->defenseSQL($_POST['expert_comment'],'NULL');
 			$result = in_array(0, $_POST['result']) ? 0 : 1;
 			$this->db->beginTransaction();
 
 			if(!empty($_POST['result'])) {
 				foreach ($_POST['result'] as $key => $val) {
-					$comment = $this->add_sql($_POST['comment'][$key],'NULL');
+					$comment = $this->defenseSQL($_POST['comment'][$key],'NULL');
 					$upd = $this->db->exec("INSERT INTO exam_image_result(image_id,result, expert_comment) VALUES($key,$val,$comment)");
 				}
 			}

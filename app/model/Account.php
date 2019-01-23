@@ -4,7 +4,6 @@ use core\Model;
 use PDO;
 
 class Account extends Model{
-	private $user;
 	public function __construct() {
 		parent::__construct();
 	}
@@ -27,7 +26,7 @@ class Account extends Model{
 					if($this->user['role_name'] == 'Администратор') {
 						header("Location: /events", true, 301);
 					} else {
-						//header("Location: /attestation/attests", true, 301);
+						header("Location: /attestation", true, 301);
 					}
 					
 					//exit();

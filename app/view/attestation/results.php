@@ -5,7 +5,7 @@
 			<div class="thead">
 				<div class="tr">
 					<?php foreach($data['title'] as $key => $val) { ?>
-						<div class="th"><a href="<?php echo '/attestation/results'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a></div>
+						<div class="th"><a href="<?php echo '/results'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a></div>
 					<?php } ?>
 					<!-- <th>Уровень</th> -->
 					<div class="td"><button class="reset">Сбросить</button></div>
@@ -21,7 +21,7 @@
 						<div class="td"><?php echo isset($result['result']) && $result['state_id'] == 4 ? ($result['result'] == 1 ? 'Верно' : 'Неверно') : ''; ?></div>
 						<div class="td"><?php echo $result['dt_public']; ?></div>
 						<div class="td"><?php echo $result['dt_end']; ?></div>
-						<div class="td"><a href="<?php echo "/attestation/results/show?type=json&id_result={$result['id']}";?>" class="button more">Подробнее</a></div>
+						<div class="td"><a href="<?php echo "/results/show?type=json&id_result={$result['id']}";?>" class="button more">Подробнее</a></div>
 					</div>
 				<?php } ?>
 			</div>

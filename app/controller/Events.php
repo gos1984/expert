@@ -16,5 +16,13 @@ class Events extends Controller{
 		$data = $this->model->getEventsAll();
 		$this->view->output("index",$data);
 	}
+
+	public function show() {
+		$this->model->getShow();
+	}
+
+	public function edit() {
+		$this->model->setEdit($_GET['action']);
+	}
 }
 ?>

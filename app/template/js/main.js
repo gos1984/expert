@@ -11,7 +11,7 @@ function $$(el) {
 } // select node elements
 
 function isEmpty(el) {
-	if(el === "" || el === null) {
+	if(el === "" || el === null || el === undefined) {
 		return true;
 	}
 	return false;
@@ -85,11 +85,11 @@ function addImages(event) {
 		reader.onload = (function(aImg) {
 			switch(file.type) {
 				case 'application/pdf':
-				return event.target.previousElementSibling.src = '/img/pdf.svg';
+				return event.target.previousElementSibling.src = '/app/template/img/pdf.svg';
 				break;
 				case 'video/mp4':
 				event.target.nextElementSibling.textContent = 'Файл загружен!';
-				return event.target.previousElementSibling.src = '/img/play_green.svg';
+				return event.target.previousElementSibling.src = '/app/template/img/play_green.svg';
 				break;
 				default:
 				return function(e) {
@@ -129,7 +129,7 @@ function progress(element) {
 	progress.create('div','progress','');
 	var progressChild = new BuildElements(progress.lastEl);
 	progressChild.create('img');
-	progressChild.attr('src','/img/progress.gif');
+	progressChild.attr('src','/app/template/img/progress.gif');
 }
 
 function formSubmit(el,form,func=null) {
@@ -214,6 +214,8 @@ if(!isEmpty($('#attests'))) {
 					var descr = new BuildElements($('.video'));
 					descr.create('h3',null,'Описание задания');
 					descr.create('p','descr',arg.descr);
+					//CKEDITOR.replace('message');
+
 				}
 				if(!isEmpty(arg.image)) {
 					for(var i = 0; i < arg.image; i++) {
@@ -222,7 +224,7 @@ if(!isEmpty($('#attests'))) {
 						images.attr('for','img' + i);
 						var childImages = new BuildElements(images.lastEl);
 						childImages.create('img','attest');
-						childImages.attr('src','/img/photo.svg');
+						childImages.attr('src','/app/template/img/photo.svg');
 						childImages.create('input','attest');
 						childImages.attr('id','img' + i);
 						childImages.attr('type','file');
@@ -274,7 +276,7 @@ if(!isEmpty($('#attests'))) {
 				default:
 				var error = new BuildElements(e.target.parentElement);
 				error.create('span','info');
-				e.target.previousElementSibling.src = '/img/photo_red.svg';
+				e.target.previousElementSibling.src = '/app/template/img/photo_red.svg';
 				e.target.setCustomValidity('Неверный формат');
 				e.target.nextElementSibling.classList.add('error');
 				e.target.nextElementSibling.textContent = 'Загрузите изображение в формате JPG или PNG';
@@ -293,7 +295,7 @@ if(!isEmpty($('#attests'))) {
 
 
 
-if(!isEmpty($('#validation'))) {
+if(!isEmpty($('#check'))) {
 	$$('.more').forEach(function(el, i) {
 		el.addEventListener('click', function(e) {
 			e.preventDefault();
@@ -406,7 +408,7 @@ if(!isEmpty($('#validation'))) {
 
 
 	$('#popup form').addEventListener('submit', function() {
-		formSubmit('#validation',this, function() {
+		formSubmit('#check',this, function() {
 			popup.close('#popup');
 			location.reload();
 		});
@@ -477,15 +479,17 @@ if(!isEmpty($('#results'))) {
 						var imgTable = new BuildElements(imgWrap.lastEl);
 						imgTable.create('div','tr');
 						var imgWrapTr = new BuildElements(imgTable.lastEl);
-						imgWrapTr.create('div','th','№ эксперта');
-						imgWrapTr.create('div','th','Результат');
-						imgWrapTr.create('div','th','Комментарий');
-						for(var j = 0; j < arg.image[i].result.length; j++) {
-							imgTable.create('div','tr');
-							var tr = new BuildElements(imgTable.lastEl);
-							tr.create('div','td', j + 1);
-							tr.create('div','td',arg.image[i].result[j].result === null ? '' : arg.image[i].result[j].result == 1 ? 'Верно' : 'Неверно');
-							tr.create('div','td',arg.image[i].result[j].expert_comment);
+						if(!isEmpty(arg.image[i].result)) {
+							imgWrapTr.create('div','th','№ эксперта');
+							imgWrapTr.create('div','th','Результат');
+							imgWrapTr.create('div','th','Комментарий');
+							for(var j = 0; j < arg.image[i].result.length; j++) {
+								imgTable.create('div','tr');
+								var tr = new BuildElements(imgTable.lastEl);
+								tr.create('div','td', j + 1);
+								tr.create('div','td',arg.image[i].result[j].result === null ? '' : arg.image[i].result[j].result == 1 ? 'Верно' : 'Неверно');
+								tr.create('div','td',arg.image[i].result[j].expert_comment);
+							}
 						}
 						
 					}
@@ -530,6 +534,10 @@ if(!isEmpty($('#users'))) {
 						for(j in arg.role) {
 							childData.create('option',null,arg.role[j].name);
 							childData.attr('value',arg.role[j].name);
+							if(arg.role[j].name === arg.descr.role_name) {
+								childData.attr('selected', true);
+							}
+							
 						}
 
 						break;
@@ -650,25 +658,25 @@ if(!isEmpty($('#users'))) {
 				
 				
 			});
-		});
-	});
+});
+});
 
-	$('.close').addEventListener('click', function() {
-		popup.close('#popup', function() {
-			$('.block_data').innerHTML = '';
-			$('.image_docs').innerHTML = '';
-			$('.history').innerHTML = '';
-		});
+$('.close').addEventListener('click', function() {
+	popup.close('#popup', function() {
+		$('.block_data').innerHTML = '';
+		$('.image_docs').innerHTML = '';
+		$('.history').innerHTML = '';
 	});
+});
 
-	$('#popup form').addEventListener('submit', function() {
-		formSubmit('#users',this, function() {
-			popup.close('#popup');
-			location.reload();
-		});
+$('#popup form').addEventListener('submit', function() {
+	formSubmit('#users',this, function() {
+		popup.close('#popup');
+		location.reload();
 	});
+});
 
-	fastEdit('#users');
+fastEdit('#users');
 }
 
 
@@ -681,7 +689,7 @@ function addVideo(parent) {
 	files.attr('for','video');
 	var videoFile = new BuildElements(files.lastEl);
 	videoFile.create('img');
-	videoFile.attr('src','/img/play.svg');
+	videoFile.attr('src','/app/template/img/play.svg');
 	videoFile.create('input');
 	videoFile.attr('id','video');
 	videoFile.attr('type','file');
@@ -691,14 +699,14 @@ function addVideo(parent) {
 
 function filesChange() {
 	$('.files').addEventListener('change', function(event) {
-		var photo = event.target.previousElementSibling.src.indexOf('/img/play.svg'),
+		var photo = event.target.previousElementSibling.src.indexOf('/app/template/img/play.svg'),
 		type = event.target.files[0].type;
 		if(type === 'video/mp4') {
 			event.target.setCustomValidity('');
 			addImages(event);
 		} else {
 			event.target.setCustomValidity('Неверный формат! Загрузите видео в формате MP4');
-			this.querySelector('img').src = '/img/play_red.svg';
+			this.querySelector('img').src = '/app/template/img/play_red.svg';
 			this.querySelector('.info').textContent = 'Неверный формат! Загрузите видео в формате MP4';
 		}
 	});
@@ -711,7 +719,7 @@ if(!isEmpty($('#events'))) {
 	$$('.more').forEach(function(el, i) {
 		el.addEventListener('click', function(e) {
 			e.preventDefault();
-			$('#popup form').setAttribute('data-href','/events/events/edit?action=update&full=true');
+			$('#popup form').setAttribute('data-href','/events/edit?action=update&full=true');
 			popup.open('#popup');
 			request(e.target.href,function(arg) {
 				var parentEl = $('#popup');
@@ -840,7 +848,7 @@ if(!isEmpty($('#events'))) {
 
 	$('.new_events').addEventListener('click',function(e) {
 		e.preventDefault();
-		$('#popup form').setAttribute('data-href','/events/events/edit?action=add&full=true');
+		$('#popup form').setAttribute('data-href','/events/edit?action=add&full=true');
 		popup.open('#popup');
 		request(e.target.href,function(arg) {
 			addVideo($('.block_video'));
@@ -1067,7 +1075,7 @@ if(!isEmpty($('#personal'))) {
 			doc.attr('for','img' + count);
 			var childImages = new BuildElements(doc.lastEl);
 			childImages.create('img');
-			childImages.attr('src','/img/photo.svg');
+			childImages.attr('src','/app/template/img/photo.svg');
 			childImages.create('input','image');
 			childImages.attr('id','img' + count);
 			childImages.attr('type','file');
@@ -1109,7 +1117,7 @@ if(!isEmpty($('#personal'))) {
 					default:
 					var error = new BuildElements(e.target.parentElement);
 					error.create('span','info');
-					e.target.previousElementSibling.src = '/img/photo_red.svg';
+					e.target.previousElementSibling.src = '/app/template/img/photo_red.svg';
 					e.target.setCustomValidity('Неверный формат');
 					e.target.nextElementSibling.classList.add('error');
 					e.target.nextElementSibling.textContent = 'Загрузите изображение в формате JPG или PNG';

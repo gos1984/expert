@@ -10,7 +10,7 @@
 		</div>
 		<div class="tbody">
 			<?php foreach($data['user'] as $u => $user) { ?>
-				<form class="tr fast_edit" action="javascript:void(null);" data-href="/users/users/edit?action=update">
+				<form class="tr fast_edit" action="javascript:void(null);" data-href="/users/edit?action=update">
 					<div class="td"><input type="text" readonly name="login" value="<?php echo $user['login']; ?>"></div>
 					<div class="td"><textarea readonly><?php echo "{$user['name_f']} {$user['name_i']} {$user['name_o']}"; ?></textarea></div>
 					<div class="td">
@@ -25,7 +25,7 @@
 					<div class="td"><textarea readonly><?php echo $user['education']; ?></textarea></div>
 					<div class="td"><input type="checkbox" name="medic" <?php echo $user['medic'] == 1 ? 'checked' :'' ?>></div>
 					<div class="td"><input type="checkbox" name="dt_insert" <?php echo !empty($user['dt_insert']) ? 'checked' :'' ?>></div>
-					<div class="td"><a href="<?php echo "/users/users/show?type=json&login_user={$user['login']}"; ?>" class="button more">Подробнее</a><button>Сохранить</button></div>
+					<div class="td"><a href="<?php echo "/users/show?type=json&login_user={$user['login']}"; ?>" class="button more">Подробнее</a><button>Сохранить</button></div>
 				</form>
 			<?php } ?>
 		</div>
@@ -35,7 +35,7 @@
 	<button class="close">X</button>
 	<div class="wrap_popup">
 		<div id="users_verif" class="image_group">
-			<form class="edit_form" action="javascript:void(null);" data-href="/users/users/edit?action=update">
+			<form class="edit_form" action="javascript:void(null);" data-href="/users/edit?action=update">
 				<div class="container">
 					<div class="block">
 						<h3>Данные пользователя</h3>

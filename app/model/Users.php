@@ -1,15 +1,12 @@
 <?php
 namespace app\model;
 use core\Model;
-use core\traits\{Defense,Role,Page};
+use core\traits\{Defense,Role,Page,Sort};
 use PDO;
 
 class Users extends Model{
-	private $user;
-	use Defense;
-	use Page;
-	use Role;
-	private $select_users = "SELECT
+	use Defense, Page, Role, Sort;
+	private $selectUsers = "SELECT
 	u.login,
 	a.role_name,
 	u.name_f,
@@ -32,19 +29,14 @@ class Users extends Model{
 
 	public function __construct() {
 		parent::__construct();
-		$this->user = array(
-			'login' => 	$this->defenseStr($_SESSION['login']),
-			'role' 	=>	$this->defenseStr($_SESSION['role'])
-		);
 	}
 
 	public function getUsersAll() {
-		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY login ASC";
-		$u = $this->db->query($this->select_users.$sort);
+		$u = $this->db->query($this->selectUsers.$this->getSort('login'));
 		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
 			$user['user'][] = $row;
 		}
-		$user['page'] = $this->getPage($this->user['login'], $this->user['role']);
+		$user['page'] = $this->getPage();
 		$user['role'] = $this->getRole();
 		$user['title'] =  array(
 				'login' 		=> 'Логин',
@@ -60,7 +52,6 @@ class Users extends Model{
 	}
 
 	public function getExperts() {
-		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY login ASC";
 		$u = $this->db->query("SELECT 
 			e.attest_id,
 			e.login,
@@ -70,13 +61,13 @@ class Users extends Model{
 			u.phone_work,
 			e.enable 
 			FROM expert_work e
-			INNER JOIN user u ON e.login = u.login".$sort);
+			INNER JOIN user u ON e.login = u.login".$this->getSort('name_f'));
 		
 		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
 			$user['experts'][] = $row;
 		}
 		$user = array(
-			'page' => $this->getPage($this->user['login'], $this->user['role']),
+			'page' => $this->getPage(),
 			'role' => $this->getRole(),
 			'title' => array(
 				'name_f'		=> '№ случая',
@@ -103,7 +94,7 @@ class Users extends Model{
 			result_check AS result,
 			IF(result_check IS NOT NULL,(IF(result_check = 0,'Отклоненно','Принято')), NULL) AS result_check,
 			comment_check
-			FROM user_docs WHERE login_user = '{$this->defense($_GET['login_user'])}'");
+			FROM user_docs WHERE login_user = '{$this->defenseStr($_GET['login_user'])}'");
 		$docs = null;
 		while ($row = $d->fetch(PDO::FETCH_ASSOC)) {
 			if(!empty($row)) {
@@ -116,14 +107,12 @@ class Users extends Model{
 	}
 
 	public function setEdit($action) {
-
 		switch($action) {
 			case 'update' :
-			$login = $this->add_sql($_POST['login']);
-			$email = $this->add_sql($_POST['email']);
+			$login = $this->defenseSQL($_POST['login']);
+			$email = $this->defenseSQL($_POST['email']);
 			$medic = isset($_POST['medic']) ? 1 : 0;
-			$role_name = $this->add_sql($_POST['role']);
-
+			$role_name = $this->defenseSQL($_POST['role_name']);
 			$this->db->exec("UPDATE user SET 
 				medic = $medic, 
 				email = $email
@@ -133,11 +122,11 @@ class Users extends Model{
 				role_name = $role_name
 				WHERE user_login = $login");
 			if(!empty($_POST['result'])) {
-				$login_check = $this->defense($_SESSION['login']);
+				$login_check = $this->defenseStr($_SESSION['login']);
 
 				foreach($_POST['result'] as $key => $val) {
-					$result = $this->defense($val);
-					$comment = $this->add_sql($_POST['comment'][$key], 'NULL');
+					$result = $this->defenseStr($val);
+					$comment = $this->defenseSQL($_POST['comment'][$key], 'NULL');
 
 					$upd = $this->db->exec("UPDATE user_docs SET login_check = '$login_check',
 						dt_check = NOW(),
@@ -154,9 +143,9 @@ class Users extends Model{
 
 			}
 			break;
-			case 'create_expert':
-				$login = $this->add_sql($_POST['login']);
-				$attest_id = $this->defense($_POST['attest_id']);
+			case 'create':
+				$login = $this->defenseSQL($_POST['login']);
+				$attest_id = $this->defenseStr($_POST['attest_id']);
 				$medic = isset($_POST['enable']) ? 1 : 0;
 				$this->db->exec("UPDATE expert_work SET enable = $medic WHERE login = $login AND attest_id = $attest_id");
 			break;
@@ -167,7 +156,7 @@ class Users extends Model{
 		if(!empty($_GET)) {
 			switch($_GET['type']) {
 				case 'json' :
-				$user['descr'] = $this->db->query($this->select_users." WHERE u.login = '{$this->defense($_GET['login_user'])}'")->fetch(PDO::FETCH_ASSOC);
+				$user['descr'] = $this->db->query($this->selectUsers." WHERE u.login = '{$this->defenseStr($_GET['login_user'])}'")->fetch(PDO::FETCH_ASSOC);
 				$user['title'] = array(
 					'login' => 'Логин',
 					'name_f' => 'Фамилия',
@@ -186,7 +175,7 @@ class Users extends Model{
 					'medic' => 'Наличие мед. образования',
 					'dt_insert' => 'Черный список'
 				);
-				$user['role'] = $this->get_role();
+				$user['role'] = $this->getRole();
 				$user['docs'] = array(
 					'title' => array(
 						'doc_name'		=> 'Наименование',
@@ -197,7 +186,7 @@ class Users extends Model{
 						'comment_check'	=> 'Комментарий',
 						'doc_file'		=> 'Документ',
 					),
-					'doc' => $this->get_documents(),
+					'doc' => $this->getDocuments(),
 				);
 				echo json_encode($user, true);
 				break;

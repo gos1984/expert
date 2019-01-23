@@ -1,5 +1,5 @@
-<section id="validation">
-	<?php if(!empty($data['attest'])) { ?>
+<section id="check">
+	<?php if(!empty($data['check'])) { ?>
 		<div class="table">
 			<div class="thead">
 				<div class="tr">
@@ -13,15 +13,15 @@
 				</div>
 			</div>
 			<div class="tbody">
-				<?php for($i = 0; $i < count($data['attest']); $i++) { ?>
+				<?php for($i = 0; $i < count($data['check']); $i++) { ?>
 					<div class="tr">
-						<div class="td"><?php echo $data['attest'][$i]['attest_id']; ?></div>
-						<div class="td"><?php echo $data['attest'][$i]['theme']; ?></div>
-						<div class="td"><?php echo $data['attest'][$i]['modality']; ?></div>
-						<div class="td"><?php echo $data['attest'][$i]['ssapm']; ?></div>
-						<div class="td"><?php echo $data['attest'][$i]['level']; ?></div>
-						<div class="td"><?php echo $data['attest'][$i]['dt_create']; ?></div>
-						<div class="td"><a class="button test more" href="<?php echo "/attestation/results/show?type=json&id_result={$data['attest'][$i]['id']}"; ?>">Проверить</a></div>
+						<div class="td"><?php echo $data['check'][$i]['attest_id']; ?></div>
+						<div class="td"><?php echo $data['check'][$i]['theme']; ?></div>
+						<div class="td"><?php echo $data['check'][$i]['modality']; ?></div>
+						<div class="td"><?php echo $data['check'][$i]['ssapm']; ?></div>
+						<div class="td"><?php echo $data['check'][$i]['level']; ?></div>
+						<div class="td"><?php echo $data['check'][$i]['dt_create']; ?></div>
+						<div class="td"><a class="button test more" href="<?php echo "/attestation/show?type=json&id_result={$data['check'][$i]['id']}"; ?>">Проверить</a></div>
 					</div>
 				<?php } ?>
 			</div>
@@ -46,7 +46,7 @@
 					<div class="video">
 					</div>
 				</div>
-				<form class="block" action="javascript:void(null);" data-href="/attestation/attests/attests?action=validation">
+				<form class="block" action="javascript:void(null);" data-href="/attestation/edit?action=check">
 					<input type="hidden" name="login" value="<?php echo $_SESSION['login']; ?>">
 					<div class="image_group">
 					</div>
