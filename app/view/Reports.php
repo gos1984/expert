@@ -7,7 +7,7 @@ class Reports extends View{
 		require_once ROOT."/app/template/head.php";
 		
 		if(file_exists(ROOT."/app/view/reports/$action.php")) {
-			require_once ROOT."/app/view/reports/$action.php";
+			require_once ROOT."/app/view/reports/index.php";
 		}
 		require_once ROOT."/app/template/footer.php";
 	}

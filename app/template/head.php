@@ -20,6 +20,7 @@ function sortOrder($sort) {
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<base href="/">
 	<link rel="stylesheet" href="/app/template/style.css"/>
+	<script src='/app/template/js/ckeditor/ckeditor.js'></script>
 	<title>Мед. Эксперт</title>
 </head>
 <header id="header">

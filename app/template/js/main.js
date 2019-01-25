@@ -1,3 +1,4 @@
+
 //HTMLCollection.prototype.forEach = Array.prototype.forEach;
 
 //function Popup()
@@ -30,15 +31,18 @@ function fastEdit(parentElement) {
 	$$('.fast_edit').forEach(function(el,i) {
 		el.addEventListener('submit', function() {
 			formSubmit(parentElement,this, function() {
-				location.reload();
+				//location.reload();
 			});
 		});
 	});
 }
 
 function BuildElements(parentEl) {
-	this.parentEl = parentEl;
-	
+	if(typeof parentEl != 'object') {
+		this.parentEl = $(parentEl);
+	} else {
+		this.parentEl = parentEl;
+	}
 	this.create = function(childEl,classEl = null,contentEl = null) {
 		this.childEl = childEl;
 		this.classEl = classEl;
@@ -56,10 +60,12 @@ function BuildElements(parentEl) {
 
 		this.parentEl.appendChild(create);
 		this.lastEl = this.parentEl.lastElementChild;
+		return this;
 	}
 
 	this.attr = function(key, value) {
 		this.parentEl.lastElementChild.setAttribute(key, value);
+		return this;
 	}
 } // builder elements
 
@@ -107,8 +113,7 @@ function addImages(event) {
 var popup = {
 	open : function(el,func = null) {
 		$(el).style.display = 'block';
-		var newEl = new BuildElements($('footer'));
-		newEl.create('div','overflow');
+		new BuildElements('footer').create('div','overflow');
 		if(!isEmpty(func)) {
 			func();
 		}
@@ -125,11 +130,8 @@ var popup = {
 
 
 function progress(element) {
-	var progress = new BuildElements($(element));
-	progress.create('div','progress','');
-	var progressChild = new BuildElements(progress.lastEl);
-	progressChild.create('img');
-	progressChild.attr('src','/app/template/img/progress.gif');
+	var progress = new BuildElements(element).create('div','progress','');
+	new BuildElements(progress.lastEl).create('img').attr('src','/app/template/img/progress.gif');
 }
 
 function formSubmit(el,form,func=null) {
@@ -199,11 +201,10 @@ if(!isEmpty($('#attests'))) {
 
 				var parentEl = $('#popup');
 				if(!isEmpty(arg.video)) {
-
-					var video = new BuildElements($('.video'));
-					video.create('video');
-					video.attr('src',arg.video);
-					video.attr('controls', true);
+					new BuildElements('.video')
+					.create('video')
+					.attr('src',arg.video)
+					.attr('controls', true);
 				} else {
 					var video = document.createElement('p');
 					video.textContent = 'Видео остутствует!';
@@ -211,44 +212,43 @@ if(!isEmpty($('#attests'))) {
 				}
 
 				if(!isEmpty(arg.descr)) {
-					var descr = new BuildElements($('.video'));
-					descr.create('h3',null,'Описание задания');
-					descr.create('p','descr',arg.descr);
+					new BuildElements('.video')
+					.create('h3',null,'Описание задания')
+					.create('p','descr',arg.descr);
 					//CKEDITOR.replace('message');
 
 				}
 				if(!isEmpty(arg.image)) {
 					for(var i = 0; i < arg.image; i++) {
-						var images = new BuildElements($('.files'));
-						images.create('label','attest');
-						images.attr('for','img' + i);
-						var childImages = new BuildElements(images.lastEl);
-						childImages.create('img','attest');
-						childImages.attr('src','/app/template/img/photo.svg');
-						childImages.create('input','attest');
-						childImages.attr('id','img' + i);
-						childImages.attr('type','file');
-						childImages.attr('name','img[' + i + ']');
-						childImages.attr('required',true);
+						var images = new BuildElements('.files')
+						.create('label','attest')
+						.attr('for','img' + i);
+						new BuildElements(images.lastEl)
+						.create('img','attest')
+						.attr('src','/app/template/img/photo.svg')
+						.create('input','attest')
+						.attr('id','img' + i)
+						.attr('type','file')
+						.attr('name','img[' + i + ']')
+						.attr('required',true);
 						images.create('div','comment');
-						var childImages = new BuildElements(images.lastEl);
-						childImages.create('label','h3','Комментарии');
-						childImages.attr('for','comment' + i);
-						childImages.create('textarea',null);
-						childImages.attr('id','comment' + i);
-						childImages.attr('name','comment[' + i + ']');
+						new BuildElements(images.lastEl)
+						.create('label','h3','Комментарии')
+						.attr('for','comment' + i)
+						.create('textarea',null)
+						.attr('id','comment' + i)
+						.attr('name','comment[' + i + ']');
 					}
 				}
-				var attestId = new BuildElements($('.files'));
-				attestId.create('input');
-				attestId.attr('type','hidden');
-				attestId.attr('name','attest_id');
-				attestId.attr('value',arg.id);
-
-				attestId.create('input');
-				attestId.attr('type','hidden');
-				attestId.attr('name','level');
-				attestId.attr('value',el.parentElement.parentElement.querySelector('.level').textContent);
+				new BuildElements('.files')
+				.create('input')
+				.attr('type','hidden')
+				.attr('name','attest_id')
+				.attr('value',arg.id)
+				.create('input')
+				.attr('type','hidden')
+				.attr('name','level')
+				.attr('value',el.parentElement.parentElement.querySelector('.level').textContent);
 			});
 		});
 	});
@@ -274,8 +274,7 @@ if(!isEmpty($('#attests'))) {
 				addImages(e);
 				break;
 				default:
-				var error = new BuildElements(e.target.parentElement);
-				error.create('span','info');
+				new BuildElements(e.target.parentElement).create('span','info');
 				e.target.previousElementSibling.src = '/app/template/img/photo_red.svg';
 				e.target.setCustomValidity('Неверный формат');
 				e.target.nextElementSibling.classList.add('error');
@@ -288,7 +287,7 @@ if(!isEmpty($('#attests'))) {
 	$('#popup form').addEventListener('submit', function() {
 		formSubmit('#attests',this, function() {
 			popup.close('#popup');
-			location.reload();
+			//location.reload();
 		});
 	});
 }
@@ -304,8 +303,8 @@ if(!isEmpty($('#check'))) {
 			request(e.target.href,function(arg) {
 
 				var parentEl = $('#popup'),
-				thead = new BuildElements($('#popup thead tr')),
-				tbody = new BuildElements($('#popup tbody tr'));
+				thead = new BuildElements('#popup thead tr'),
+				tbody = new BuildElements('#popup tbody tr');
 
 				for(t in arg.title) {
 					thead.create('th',null,arg.title[t]);
@@ -317,12 +316,12 @@ if(!isEmpty($('#check'))) {
 
 				}
 				if(!isEmpty(arg.descr.video)) {
-					var video = new BuildElements($('.video'));
-					video.create('video');
-					video.attr('src',arg.descr.video);
-					video.attr('controls', true);
-					video.create('h4',null,'Комментарий аттестуемого');
-					video.create('p',null,arg.descr.attested_comment);
+					var video = new BuildElements('.video')
+					.create('video')
+					.attr('src',arg.descr.video)
+					.attr('controls', true)
+					.create('h4',null,'Комментарий аттестуемого')
+					.create('p',null,arg.descr.attested_comment);
 				} else {
 					var video = document.createElement('h3');
 					video.textContent = 'Видео остутствует!';
@@ -330,68 +329,58 @@ if(!isEmpty($('#check'))) {
 				}
 
 				if(!isEmpty(arg.image)) {
-					var img = new BuildElements($('.image_group'));
+					var img = new BuildElements('.image_group');
 					for(i in arg.image) {
 						img.create('div','image');
-						var imgWrap = new BuildElements(img.lastEl);
-						imgWrap.create('div','image_wrap');
-						var imgImg = new BuildElements(imgWrap.lastEl);
-						imgImg.create('img');
-						imgImg.attr('src',arg.image[i].image_file);
-						imgWrap.create('div','tools');
-						imgWrap.create('p',null,arg.image[i].attested_comment);
+						var imgWrap = new BuildElements(img.lastEl).create('div','image_wrap');
+						var imgImg = new BuildElements(imgWrap.lastEl).create('img').attr('src',arg.image[i].image_file);
+						imgWrap.create('div','tools').create('p',null,arg.image[i].attested_comment);
 						img.create('div','descript');
 						
-						var imgWrap = new BuildElements(img.lastEl);
-						imgWrap.create('label','result','Неверно');
-						imgWrap.attr('for','img' + i + i);
-						imgWrap.create('input','result','1');
-						imgWrap.attr('id','img' + i + i);
-						imgWrap.attr('type','radio');
-						imgWrap.attr('name','result[' + arg.image[i].id + ']');
-						imgWrap.attr('value','0');
-
-						imgWrap.create('label','result','Верно');
-						imgWrap.attr('for','img' + i);
-						imgWrap.create('input','result','1');
-						imgWrap.attr('id','img' + i);
-						imgWrap.attr('type','radio');
-						imgWrap.attr('name','result[' + arg.image[i].id + ']');
-						imgWrap.attr('value','1');
-
-						imgWrap.create('br');
-						imgWrap.create('label','result','Комментарий');
-						imgWrap.attr('for','comment' + i);
-						imgWrap.create('textarea','result');
-						imgWrap.attr('id','comment' + i);
-						imgWrap.attr('name','comment[' + arg.image[i].id + ']');
+						new BuildElements(img.lastEl)
+						.create('label','result','Неверно')
+						.attr('for','img' + i + i)
+						.create('input','result','1')
+						.attr('id','img' + i + i)
+						.attr('type','radio')
+						.attr('name','result[' + arg.image[i].id + ']')
+						.attr('value','0')
+						.create('label','result','Верно')
+						.attr('for','img' + i)
+						.create('input','result','1')
+						.attr('id','img' + i)
+						.attr('type','radio')
+						.attr('name','result[' + arg.image[i].id + ']')
+						.attr('value','1')
+						.create('br')
+						.create('label','result','Комментарий')
+						.attr('for','comment' + i)
+						.create('textarea','result')
+						.attr('id','comment' + i)
+						.attr('name','comment[' + arg.image[i].id + ']');
 						//arg.descr.expert_comment
 					}
-					img.create('label','result','Общий комментарий');
-					img.attr('for','expert_comment' + i);
-					img.create('textarea','result');
-					img.attr('id','expert_comment' + i);
-					img.attr('name','expert_comment');
-
-					img.create('input');
-					img.attr('type','hidden');
-					img.attr('name','exam');
-					img.attr('value',arg.descr.id);
-
-					img.create('input');
-					img.attr('type','hidden');
-					img.attr('name','level');
-					img.attr('value',arg.descr.level);
-
-					img.create('input');
-					img.attr('type','hidden');
-					img.attr('name','attest_id');
-					img.attr('value',arg.descr.attest_id);
-
-					img.create('input');
-					img.attr('type','hidden');
-					img.attr('name','login');
-					img.attr('value',arg.descr.login);
+					img.create('label','result','Общий комментарий')
+					.attr('for','expert_comment' + i)
+					.create('textarea','result')
+					.attr('id','expert_comment' + i)
+					.attr('name','expert_comment')
+					.create('input')
+					.attr('type','hidden')
+					.attr('name','exam')
+					.attr('value',arg.descr.id)
+					.create('input')
+					.attr('type','hidden')
+					.attr('name','level')
+					.attr('value',arg.descr.level)
+					.create('input')
+					.attr('type','hidden')
+					.attr('name','attest_id')
+					.attr('value',arg.descr.attest_id)
+					.create('input')
+					.attr('type','hidden')
+					.attr('name','login')
+					.attr('value',arg.descr.login);
 				}
 			});
 		});
@@ -410,7 +399,7 @@ if(!isEmpty($('#check'))) {
 	$('#popup form').addEventListener('submit', function() {
 		formSubmit('#check',this, function() {
 			popup.close('#popup');
-			location.reload();
+			//location.reload();
 		});
 	});
 
@@ -427,8 +416,8 @@ if(!isEmpty($('#results'))) {
 			request(e.target.href,function(arg) {
 
 				var parentEl = $('#popup'),
-				thead = new BuildElements($('#popup thead tr')),
-				tbody = new BuildElements($('#popup tbody tr'));
+				thead = new BuildElements('#popup thead tr'),
+				tbody = new BuildElements('#popup tbody tr');
 
 				for(t in arg.title) {
 					thead.create('th',null,arg.title[t]);
@@ -440,20 +429,20 @@ if(!isEmpty($('#results'))) {
 
 				}
 				if(!isEmpty(arg.descr.video)) {
-					var video = new BuildElements($('.video'));
-					video.create('video');
-					video.attr('src',arg.descr.video);
-					video.attr('controls', true);
-					video.create('h4',null,'Комментарий аттестуемого');
-					video.create('p',null,arg.descr.attested_comment);
-					video.create('h4',null,'Комментарии экспертов');
-					video.create('div','table');
+					new BuildElements('.video')
+					.create('video')
+					.attr('src',arg.descr.video)
+					.attr('controls', true)
+					.create('h4',null,'Комментарий аттестуемого')
+					.create('p',null,arg.descr.attested_comment)
+					.create('h4',null,'Комментарии экспертов')
+					.create('div','table');
 					var expTable = new BuildElements(video.lastEl);
 					for(var i = 0; i < arg.expert_comment.length; i++) {
 						expTable.create('div','tr');
-						var expTableTr = new BuildElements(expTable.lastEl);
-						expTableTr.create('div','td','Эксперт №' + (i + 1));
-						expTableTr.create('div','td',arg.expert_comment[i].expert_comment);
+						new BuildElements(expTable.lastEl)
+						.create('div','td','Эксперт №' + (i + 1))
+						.create('div','td',arg.expert_comment[i].expert_comment);
 					}
 
 				} else {
@@ -463,32 +452,28 @@ if(!isEmpty($('#results'))) {
 				}
 
 				if(!isEmpty(arg.image)) {
-					var img = new BuildElements($('.image_group'));
+					var img = new BuildElements('.image_group');
 					for(var i = 0; i < arg.image.length; i++) {
 						img.create('div','image');
-						var imgWrap = new BuildElements(img.lastEl);
-						imgWrap.create('div','image_wrap');
-						var imgImg = new BuildElements(imgWrap.lastEl);
-						imgImg.create('img');
-						imgImg.attr('src',arg.image[i].image_file);
-						imgWrap.create('div','tools');
-						imgWrap.create('p',null,arg.image[i].attested_comment);
+						var imgWrap = new BuildElements(img.lastEl).create('div','image_wrap');
+						
+						new BuildElements(imgWrap.lastEl).create('img').attr('src',arg.image[i].image_file);
+
+						imgWrap.create('div','tools').create('p',null,arg.image[i].attested_comment);
 						img.create('div','descript');
-						var imgWrap = new BuildElements(img.lastEl);
-						imgWrap.create('div','table');
-						var imgTable = new BuildElements(imgWrap.lastEl);
-						imgTable.create('div','tr');
+						var imgWrap = new BuildElements(img.lastEl).create('div','table');
+						var imgTable = new BuildElements(imgWrap.lastEl).create('div','tr');
 						var imgWrapTr = new BuildElements(imgTable.lastEl);
 						if(!isEmpty(arg.image[i].result)) {
-							imgWrapTr.create('div','th','№ эксперта');
-							imgWrapTr.create('div','th','Результат');
-							imgWrapTr.create('div','th','Комментарий');
+							imgWrapTr.create('div','th','№ эксперта')
+							.create('div','th','Результат')
+							.create('div','th','Комментарий');
 							for(var j = 0; j < arg.image[i].result.length; j++) {
 								imgTable.create('div','tr');
-								var tr = new BuildElements(imgTable.lastEl);
-								tr.create('div','td', j + 1);
-								tr.create('div','td',arg.image[i].result[j].result === null ? '' : arg.image[i].result[j].result == 1 ? 'Верно' : 'Неверно');
-								tr.create('div','td',arg.image[i].result[j].expert_comment);
+								var tr = new BuildElements(imgTable.lastEl)
+								.create('div','td', j + 1)
+								.create('div','td',arg.image[i].result[j].result === null ? '' : arg.image[i].result[j].result == 1 ? 'Верно' : 'Неверно')
+								.create('div','td',arg.image[i].result[j].expert_comment);
 							}
 						}
 						
@@ -515,25 +500,21 @@ if(!isEmpty($('#users'))) {
 	$$('.more').forEach(function(el, i) {
 		el.addEventListener('click', function(e) {
 			e.preventDefault();
-			popup.open('#popup');
+			popup.open("#popup");
 
 			request(e.target.href,function(arg) {
 				var parentEl = $('#popup');
 				
-				var data = new BuildElements($('.block_data'));
+				var data = new BuildElements('.block_data');
 				for(i in arg.descr) {
-					data.create('label',null,arg.title[i]);
-					data.attr('for',i);
+					data.create('label',null,arg.title[i]).attr('for',i);
 
 					switch(i) {
 						case 'role_name':
-						data.create('select');
-						data.attr('id',i);
-						data.attr('name',i);
+						data.create('select').attr('id',i).attr('name',i);
 						childData = new BuildElements(data.lastEl);
 						for(j in arg.role) {
-							childData.create('option',null,arg.role[j].name);
-							childData.attr('value',arg.role[j].name);
+							childData.create('option',null,arg.role[j].name).attr('value',arg.role[j].name);
 							if(arg.role[j].name === arg.descr.role_name) {
 								childData.attr('selected', true);
 							}
@@ -542,18 +523,18 @@ if(!isEmpty($('#users'))) {
 
 						break;
 						case 'email' :
-						data.create('input');
-						data.attr('id',i);
-						data.attr('name',i);
-						data.attr('type','email');
-						data.attr('value',!isEmpty(arg.descr[i]) ? arg.descr[i] : '');
+						data.create('input')
+						.attr('id',i)
+						.attr('name',i)
+						.attr('type','email')
+						.attr('value',!isEmpty(arg.descr[i]) ? arg.descr[i] : '');
 						break;
 						case 'medic':
 						case 'dt_insert':
 
-						data.create('input');
-						data.attr('id',i);
-						data.attr('name',i);
+						data.create('input')
+						data.attr('id',i)
+						data.attr('name',i)
 						data.attr('type','checkbox');
 
 						if(i === 'medic') {
@@ -565,59 +546,52 @@ if(!isEmpty($('#users'))) {
 						}
 						break;
 						default :
-						data.create('input');
-						data.attr('id',i);
-						data.attr('name',i);
-						data.attr('value',!isEmpty(arg.descr[i]) ? arg.descr[i] : '');
-						data.attr('readonly', true);
+						data.create('input')
+						.attr('id',i)
+						.attr('name',i)
+						.attr('value',!isEmpty(arg.descr[i]) ? arg.descr[i] : '')
+						.attr('readonly', true);
 						break;
 					}
 				}
 				if(!isEmpty(arg.docs)) {
-					var docs = new BuildElements($('.image_docs')),
-					history = new BuildElements($('.history')),
+					var docs = new BuildElements('.image_docs'),
+					history = new BuildElements('.history'),
 					count = 0
 					
 					for(i in arg.docs.doc) {
 						if(isEmpty(arg.docs.doc[i].result_check)) {
 							docs.create('div','image');
-							var docsWrap = new BuildElements(docs.lastEl);
-							docsWrap.create('div','image_wrap');
-							var docsImg = new BuildElements(docsWrap.lastEl);
-							docsImg.create('img');
-							docsImg.attr('src',arg.docs.doc[i].doc_file);
-							docsWrap.create('div','tools');
-							docsWrap.create('p',null,arg.docs.doc[i].doc_name);
+							var docsWrap = new BuildElements(docs.lastEl).create('div','image_wrap');
+							var docsImg = new BuildElements(docsWrap.lastEl).create('img').attr('src',arg.docs.doc[i].doc_file);
+							docsWrap.create('div','tools').create('p',null,arg.docs.doc[i].doc_name);
 							docs.create('div','descript');
 
-							var docsWrap = new BuildElements(docs.lastEl);
-							docsWrap.create('label','result','Отклонено');
-							docsWrap.attr('for','img' + i + i);
-							docsWrap.create('input','result','1');
-							docsWrap.attr('id','img' + i + i);
-							docsWrap.attr('type','radio');
-							docsWrap.attr('name','result[' + arg.docs.doc[i].id + ']');
-							docsWrap.attr('value','0');
-
-							docsWrap.create('label','result','Принято');
-							docsWrap.attr('for','img' + i);
-							docsWrap.create('input','result','1');
-							docsWrap.attr('id','img' + i);
-							docsWrap.attr('type','radio');
-							docsWrap.attr('name','result[' + arg.docs.doc[i].id + ']');
-							docsWrap.attr('value','1');
-
-							docsWrap.create('br');
-							docsWrap.create('label','result','Комментарий');
-							docsWrap.attr('for','comment' + i);
-							docsWrap.create('textarea','result');
-							docsWrap.attr('id','comment' + i);
-							docsWrap.attr('name','comment[' + arg.docs.doc[i].id + ']');
+							var docsWrap = new BuildElements(docs.lastEl)
+							.create('label','result','Отклонено')
+							.attr('for','img' + i + i)
+							.create('input','result','1')
+							.attr('id','img' + i + i)
+							.attr('type','radio')
+							.attr('name','result[' + arg.docs.doc[i].id + ']')
+							.attr('value','0')
+							.create('label','result','Принято')
+							.attr('for','img' + i)
+							.create('input','result','1')
+							.attr('id','img' + i)
+							.attr('type','radio')
+							.attr('name','result[' + arg.docs.doc[i].id + ']')
+							.attr('value','1')
+							.create('br')
+							.create('label','result','Комментарий')
+							.attr('for','comment' + i)
+							.create('textarea','result')
+							.attr('id','comment' + i)
+							.attr('name','comment[' + arg.docs.doc[i].id + ']');
 						} else {
 							if(count < 1) {
 								history.create('div','thead');
-								var tHead = new BuildElements(history.lastEl);
-								tHead.create('div','tr');
+								var tHead = new BuildElements(history.lastEl).create('div','tr');
 								var tr = new BuildElements(tHead.lastEl);
 								for(var t in arg.docs.title) {
 									tr.create('div','th',arg.docs.title[t]);
@@ -630,30 +604,26 @@ if(!isEmpty($('#users'))) {
 							} else {
 								tBody.create('div','tr red');
 							}
-							var tr = new BuildElements(tBody.lastEl);
-							tr.create('div','td',arg.docs.doc[i].doc_name);
-							tr.create('div','td',arg.docs.doc[i].dt_insert);
-							tr.create('div','td',arg.docs.doc[i].dt_check);
-							tr.create('div','td',arg.docs.doc[i].login_check);
-							tr.create('div','td',arg.docs.doc[i].result_check);
-							tr.create('div','td',arg.docs.doc[i].comment_check);
-							tr.create('div','td');
-							var tdImg = new BuildElements(tr.lastEl);
-							tdImg.create('div','image');
-							var docsWrap = new BuildElements(tdImg.lastEl);
-							docsWrap.create('div','image_wrap');
-							var docsImg = new BuildElements(docsWrap.lastEl);
-							docsImg.create('img');
-							docsImg.attr('src',arg.docs.doc[i].doc_file);
+							var tr = new BuildElements(tBody.lastEl)
+							.create('div','td',arg.docs.doc[i].doc_name)
+							.create('div','td',arg.docs.doc[i].dt_insert)
+							.create('div','td',arg.docs.doc[i].dt_check)
+							.create('div','td',arg.docs.doc[i].login_check)
+							.create('div','td',arg.docs.doc[i].result_check)
+							.create('div','td',arg.docs.doc[i].comment_check)
+							.create('div','td');
+							var tdImg = new BuildElements(tr.lastEl).create('div','image');
+							var docsWrap = new BuildElements(tdImg.lastEl).create('div','image_wrap');
+							var docsImg = new BuildElements(docsWrap.lastEl).create('img').attr('src',arg.docs.doc[i].doc_file);
 							docsWrap.create('div','tools');
 							count++;
 						}
 					}
 
-					docs.create('input');
-					docs.attr('type','hidden');
-					docs.attr('name','docs');
-					docs.attr('value',arg.descr.id);
+					docs.create('input')
+					.attr('type','hidden')
+					.attr('name','docs')
+					.attr('value',arg.descr.id);
 				}
 				
 				
@@ -672,7 +642,7 @@ $('.close').addEventListener('click', function() {
 $('#popup form').addEventListener('submit', function() {
 	formSubmit('#users',this, function() {
 		popup.close('#popup');
-		location.reload();
+		//location.reload();
 	});
 });
 
@@ -682,19 +652,16 @@ fastEdit('#users');
 
 
 function addVideo(parent) {
-	var video = new BuildElements(parent);
-	video.create('div','files');
-	var files = new BuildElements(video.lastEl);
-	files.create('label');
-	files.attr('for','video');
-	var videoFile = new BuildElements(files.lastEl);
-	videoFile.create('img');
-	videoFile.attr('src','/app/template/img/play.svg');
-	videoFile.create('input');
-	videoFile.attr('id','video');
-	videoFile.attr('type','file');
-	videoFile.attr('name','video');
-	videoFile.create('span','info','Загрузите видео в формате MP4');
+	var video = new BuildElements(parent).create('div','files');
+	var files = new BuildElements(video.lastEl).create('label').attr('for','video');
+	var videoFile = new BuildElements(files.lastEl)
+		.create('img')
+		.attr('src','/app/template/img/play.svg')
+		.create('input')
+		.attr('id','video')
+		.attr('type','file')
+		.attr('name','video')
+		.create('span','info','Загрузите видео в формате MP4');
 }
 
 function filesChange() {
@@ -724,27 +691,21 @@ if(!isEmpty($('#events'))) {
 			request(e.target.href,function(arg) {
 				var parentEl = $('#popup');
 				
-				var data = new BuildElements($('.block_data'));
+				var data = new BuildElements('.block_data');
 				for(i in arg.descr) {
-					if(i !== 'video') {
-						data.create('label',null,arg.title[i]);
-						data.attr('for',i);
+					if(i !== 'video' && i !== 'descr') {
+						data.create('label',null,arg.title[i]).attr('for',i);
 					}
 					switch(i) {
 						case 'descr' :
-						data.create('textarea',null,arg.descr[i]);
-						data.attr('id',i);
-						data.attr('name',i);
+						
 						break;
 						case 'modality':
 						case 'ssapm':
-						data.create('select');
-						data.attr('id',i);
-						data.attr('name',i);
+						data.create('select').attr('id',i).attr('name',i);
 						childData = new BuildElements(data.lastEl);
 						for(j in arg[i]) {
-							childData.create('option',null,arg[i][j].name);
-							childData.attr('value',arg[i][j].id);
+							childData.create('option',null,arg[i][j].name).attr('value',arg[i][j].id);
 							if(arg[i][j].id === arg.descr[i]) {
 								childData.attr('selected',true);
 							}
@@ -752,20 +713,14 @@ if(!isEmpty($('#events'))) {
 
 						break;
 						case 'public':
-						data.create('input');
-						data.attr('id',i);
-						data.attr('name',i);
-						data.attr('type','checkbox');
+						data.create('input').attr('id',i).attr('name',i).attr('type','checkbox');
 						if(arg.descr[i] == 1) {
 							data.attr('checked',true);
 						}
 						break;
 						case 'video':
 						if(!isEmpty(arg.descr[i])) {
-							var video = new BuildElements($('.block_video'));
-							video.create('video');
-							video.attr('src',arg.descr[i]);
-							video.attr('controls', true);
+							new BuildElements('.block_video').create('video').attr('src',arg.descr[i]).attr('controls', true);
 						} else {
 							var video = document.createElement('h3');
 							video.textContent = 'Видео остутствует!';
@@ -783,27 +738,22 @@ if(!isEmpty($('#events'))) {
 							case 'price_level2_next' :
 							case 'active_days_level1' :
 							case 'active_days_level2' :
-							data.attr('type','number');
-							data.attr('min',0);
+							data.attr('type','number').attr('min',0);
 							break;
 							case 'id':
 							data.attr('readonly', true);
 						}
-						data.attr('id',i);
-						data.attr('name',i);
-						data.attr('value',!isEmpty(arg.descr[i]) ? arg.descr[i] : '');
+						data.attr('id',i).attr('name',i).attr('value',!isEmpty(arg.descr[i]) ? arg.descr[i] : '');
 						break;
 					}
 				}
+				
 				if(!isEmpty(arg.docs)) {
-					var docs = new BuildElements($('.block_docs'));
+					var docs = new BuildElements('.block_docs');
 					for(i in arg.docs) {
 						docs.create('div','image');
-						var docsWrap = new BuildElements(docs.lastEl);
-						docsWrap.create('div','image_wrap');
-						var docsImg = new BuildElements(docsWrap.lastEl);
-						docsImg.create('img');
-						docsImg.attr('src',arg.docs[i].doc_file);
+						var docsWrap = new BuildElements(docs.lastEl).create('div','image_wrap');
+						new BuildElements(docsWrap.lastEl).create('img').attr('src',arg.docs[i].doc_file);
 						docsWrap.create('div','tools');
 					}
 				}
@@ -824,7 +774,7 @@ if(!isEmpty($('#events'))) {
 				el.nextElementSibling.textContent = 'По данному случаю проводились аттестации!'
 			}
 			setTimeout(function() {
-				location.reload();
+				////location.reload();
 			}, 1000);
 		});
 	});
@@ -840,7 +790,7 @@ if(!isEmpty($('#events'))) {
 	$('#popup form').addEventListener('submit', function() {
 		formSubmit('#events',this, function() {
 			popup.close('#popup');
-			location.reload();
+			////location.reload();
 		});
 	});
 
@@ -853,32 +803,25 @@ if(!isEmpty($('#events'))) {
 		request(e.target.href,function(arg) {
 			addVideo($('.block_video'));
 			filesChange();
-			var data = new BuildElements($('.block_data'));
+			var data = new BuildElements('.block_data');
 			for(i in arg.title) {
 				if(i !== 'id') {
-					data.create('label',null,arg.title[i]);
-					data.attr('for',i);
+					data.create('label',null,arg.title[i]).attr('for',i);
 				}
 				switch(i) {
 					case 'id':
 					break;
 					case 'modality':
 					case 'ssapm':
-					data.create('select');
-					data.attr('id',i);
-					data.attr('name',i);
+					data.create('select').attr('id',i).attr('name',i);
 					childData = new BuildElements(data.lastEl);
 					for(j in arg[i]) {
-						childData.create('option',null,arg[i][j].name);
-						childData.attr('value',arg[i][j].id);
+						childData.create('option',null,arg[i][j].name).attr('value',arg[i][j].id);
 					}
 
 					break;
 					case 'public':
-					data.create('input');
-					data.attr('id',i);
-					data.attr('name',i);
-					data.attr('type','checkbox');
+					data.create('input').attr('id',i).attr('name',i).attr('type','checkbox');
 					break;
 					case 'video':
 					addVideo($('.block_video'));
@@ -893,14 +836,12 @@ if(!isEmpty($('#events'))) {
 						case 'price_level2_next' :
 						case 'active_days_level1' :
 						case 'active_days_level2' :
-						data.attr('type','number');
-						data.attr('min',0);
+						data.attr('type','number').attr('min',0);
 						break;
 						case 'id':
 						data.attr('readonly', true);
 					}
-					data.attr('id',i);
-					data.attr('name',i);
+					data.attr('id',i).attr('name',i);
 					break;
 				}
 			}
@@ -917,10 +858,7 @@ if(!isEmpty($('.image_group'))) {
 		if(e.target.tagName === 'IMG') {
 			parent.classList.add('active');
 
-			var el = new BuildElements($('.image.active .tools'));
-			el.create('i','close');
-			el.create('i','full');
-			el.create('i','zoom');
+			new BuildElements('.image.active .tools').create('i','close').create('i','full').create('i','zoom');
 		}
 	});
 
@@ -947,12 +885,8 @@ if(!isEmpty($('.image_group'))) {
 		});
 	$('.image_group').addEventListener('mouseover', function(e) {
 		if(e.target.tagName	=== 'IMG' && e.target.parentElement.className === 'image_wrap zoom') {
-			var elZoom = new BuildElements($('.image.active .image_wrap'));
-
-			elZoom.create('div','zoom_img');
-			var zoomImg = new BuildElements(elZoom.lastEl);
-			zoomImg.create('img');
-			zoomImg.attr('src', $('.image.active .image_wrap img').src);
+			var elZoom = new BuildElements('.image.active .image_wrap').create('div','zoom_img');
+			var zoomImg = new BuildElements(elZoom.lastEl).create('img').attr('src', $('.image.active .image_wrap img').src);
 		}
 	});
 	$('.image_group').addEventListener('mouseout', function(e) {
@@ -998,19 +932,15 @@ if(!isEmpty($('#directory'))) {
 
 		if(e.target.tagName === 'I' &&  !isEmpty(parentEl.querySelector('input').value)) {
 			if(e.target.classList.contains('add')) {
-				var tr = new BuildElements(parentEl.parentElement.previousElementSibling);
-				tr.create('div','tr');
-				var td = new BuildElements(tr.lastEl);
-				td.create('div','td');
-				var inp = new BuildElements(td.lastEl);
-				inp.create('input');
-				inp.attr('type','text');
-				inp.attr('value',parentEl.querySelector('input').value);
-				inp.attr('name',parentEl.querySelector('input').getAttribute('data-name') + '[new][]');
-				var td = new BuildElements(tr.lastEl);
-				td.create('div','td');
-				var btn = new BuildElements(td.lastEl);
-				btn.create('i','button edit del','-');
+				var tr = new BuildElements(parentEl.parentElement.previousElementSibling).create('div','tr');
+				var td = new BuildElements(tr.lastEl).create('div','td');
+				var inp = new BuildElements(td.lastEl)
+				.create('input')
+				.attr('type','text')
+				.attr('value',parentEl.querySelector('input').value)
+				.attr('name',parentEl.querySelector('input').getAttribute('data-name') + '[new][]');
+				var td = new BuildElements(tr.lastEl).create('div','td');
+				var btn = new BuildElements(td.lastEl).create('i','button edit del','-');
 				parentEl.querySelector('input').value = '';
 			} else if(e.target.classList.contains('del')) {
 				request(e.target.getAttribute('data-href'), function() {
@@ -1041,7 +971,7 @@ if(!isEmpty($('#directory'))) {
 	$$('#directory form').forEach(function(el, i) {
 		el.addEventListener('submit', function() {
 			formSubmit('#directory',this, function() {
-				location.reload();
+				//location.reload();
 			});
 		});
 	});
@@ -1053,7 +983,7 @@ if(!isEmpty($('#personal'))) {
 	if(!isEmpty($('#personal_data'))) {
 		$('#personal_data').addEventListener('submit', function() {
 			formSubmit('#personal_data',this, function() {
-				location.reload();
+				//location.reload();
 			});
 		});
 	}
@@ -1061,33 +991,33 @@ if(!isEmpty($('#personal'))) {
 	if(!isEmpty($('#password_update'))) {
 		$('#password_update').addEventListener('submit', function() {
 			formSubmit('#password_update',this, function() {
-				location.reload();
+				//location.reload();
 			});
 		});
 	}
 	if(!isEmpty($('.files'))) {
-		var images = new BuildElements($('.files'));
+		var images = new BuildElements('.files');
 		var count = 0;
 		function addFormDoc() {
 			images.create('div','doc');
-			var doc = new BuildElements(images.lastEl);
-			doc.create('label','document');
-			doc.attr('for','img' + count);
-			var childImages = new BuildElements(doc.lastEl);
-			childImages.create('img');
-			childImages.attr('src','/app/template/img/photo.svg');
-			childImages.create('input','image');
-			childImages.attr('id','img' + count);
-			childImages.attr('type','file');
+			var doc = new BuildElements(images.lastEl)
+				.create('label','document')
+				.attr('for','img' + count);
+			var childImages = new BuildElements(doc.lastEl)
+				.create('img')
+				.attr('src','/app/template/img/photo.svg')
+				.create('input','image')
+				.attr('id','img' + count)
+				.attr('type','file');
 			if($('.files').childElementCount <= 1) {
 				childImages.attr('required',true);
 			}
 			doc.create('div','comment');
-			var childImages = new BuildElements(doc.lastEl);
-			childImages.create('label','h3','Наименование документа');
-			childImages.attr('for','comment' + count);
-			childImages.create('textarea','docs_name');
-			childImages.attr('id','comment' + count);
+			new BuildElements(doc.lastEl)
+				.create('label','h3','Наименование документа')
+				.attr('for','comment' + count)
+				.create('textarea','docs_name')
+				.attr('id','comment' + count);
 
 			//childImages.attr('name','comment[]');
 			count++;
@@ -1115,8 +1045,7 @@ if(!isEmpty($('#personal'))) {
 					}
 					break;
 					default:
-					var error = new BuildElements(e.target.parentElement);
-					error.create('span','info');
+					var error = new BuildElements(e.target.parentElement).create('span','info');
 					e.target.previousElementSibling.src = '/app/template/img/photo_red.svg';
 					e.target.setCustomValidity('Неверный формат');
 					e.target.nextElementSibling.classList.add('error');
@@ -1128,7 +1057,7 @@ if(!isEmpty($('#personal'))) {
 
 		$('#education_docs').addEventListener('submit', function() {
 			formSubmit('#education_docs',this, function() {
-				location.reload();
+				//location.reload();
 			});
 		});
 
@@ -1155,7 +1084,7 @@ if(!isEmpty($('#setting'))) {
 	$$('form').forEach(function(el, i) {
 		el.addEventListener('submit', function() {
 			formSubmit('form',this, function() {
-				location.reload();
+				//location.reload();
 			});
 		});
 	});

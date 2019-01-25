@@ -14,7 +14,7 @@ class Personal extends Controller{
 
 	public function index() {
 		$data = $this->model->getInfo();
-		$this->view->output("index",$data);
+		$this->view->output("info",$data);
 	}
 
 	function docs() {
@@ -32,8 +32,12 @@ class Personal extends Controller{
 		$this->view->output("sertification",$data);
 	}
 
-	function get_show() {
-		$this->model->get_show();
+	function edit() {
+		$this->model->setEdit($_GET['action']);
+	}
+
+	function show() {
+		$this->model->getShow();
 	}
 }
 ?>

@@ -1,20 +1,7 @@
-<section id="personal">
-	<div class="main">
-		<nav class="sidebar">
-			<ul>
-				<li><a href="/personal">Личная информация</a></li>
-				<li><a href="/personal/docs">Копии документов</a></li>
-				<li><a href="/personal/password">Смена пароля</a></li>
-				<li><a href="/personal/sertification">Сертификаты</a></li>
-			</ul>
-		</nav>
-		<div class="content">
-			<h1>Личный кабинет</h1>
-			<div class="container">
-				<div class="block">
+<div class="block">
 
 	<h3>Загрузите документы об образовании!</h3>
-	<form id="education_docs" class="scan" action="javascript:void(null);" data-href="/personal/docs/edit?action=docs">
+	<form id="education_docs" class="scan" action="javascript:void(null);" data-href="/personal/edit?action=docs">
 		<input type="hidden" name="login" value="<?php echo $_SESSION['login']; ?>">
 		<div class="files docs">
 		</div>
@@ -66,8 +53,3 @@
 		</div>
 	</div>
 </div>
-			</div>
-		</div>
-	</div>
-</section>
-

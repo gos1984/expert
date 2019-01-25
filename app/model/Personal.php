@@ -1,13 +1,12 @@
 <?php
 namespace app\model;
 use core\Model;
-use core\traits\{Defense,Page,Level};
+use core\traits\{Defense,Page,Level,Password};
 use PDO;
+use Mpdf\Mpdf;
 
 class Personal extends Model{
-	use Defense;
-	use Level;
-	use Page;
+	use Defense, Level, Page, Password;
 	
 	public function __construct() {
 		parent::__construct();
@@ -73,7 +72,7 @@ class Personal extends Model{
 				'comment_check' => 'Комментарии',
 				'doc_file'		=> 'Документ',
 			);
-		return $docs;
+			return $docs;
 		}
 		return 'Загруженных документов нет';
 		
@@ -85,7 +84,6 @@ class Personal extends Model{
 	}
 
 	function getSertification() {
-		$login = $this->defenseStr($_SESSION['login']);
 		$data = null;
 		$s = $this->db->query("SELECT
 			s.id,
@@ -104,7 +102,7 @@ class Personal extends Model{
 			INNER JOIN modality m ON m.id = s.modality_id
 			INNER JOIN ssapm ss ON ss.id = s.ssapm_id
 			WHERE
-			e.login = '{$login}'");
+			e.login = '{$this->user['login']}'");
 		while ($row = $s->fetch(PDO::FETCH_ASSOC)) {
 			$sertification['sertif'][] = $row;
 		}
@@ -115,52 +113,50 @@ class Personal extends Model{
 		return $sertification;
 	}
 
-	function get_sertif_create(int $id,$login, int $level) {
-		$login = $this->defense($login);
-		$data = null;
+	function getSertifCreate(int $id,$login, int $level) {
+		$login = $this->defenseStr($login);
 		$sertif = $this->db->query("SELECT
 			s.id,
 			e.login,
 			CONCAT(u.name_f,' ',u.name_i,' ',u.name_o) AS name,
-			s.exam_id,
-			s.ssapm_id,
 			ss.name AS ssapm,
 			s.date_start,
 			s.date_end,
 			s.public_link,
-			e.level
+			l.name AS level
 			FROM
 			exam e
 			INNER JOIN sertif s ON s.exam_id = e.id
 			INNER JOIN modality m ON m.id = s.modality_id
 			INNER JOIN ssapm ss ON ss.id = s.ssapm_id
 			INNER JOIN user u ON u.login = e.login
+			INNER JOIN level l ON l.id = e.level
 			WHERE
 			e.login = '{$login}' AND e.level = $level AND s.id = $id");
-
 		while ($row = $sertif->fetch(PDO::FETCH_ASSOC)) {
-			$data['data'] = $row;
+			$data = $row;
 		}
 		return $data;
 	}
 
 
 
-	function set_edit($action) {
+	function setEdit($action) {
+
 		switch($action) {
 			case 'info' :
-			$name_f 		= 	$this->add_sql($_POST['name_f'], 'NULL');
-			$name_i 		=	$this->add_sql($_POST['name_i'], 'NULL');
-			$name_o 		= 	$this->add_sql($_POST['name_o'], 'NULL');
-			$email 			= 	$this->add_sql($_POST['email'], 'NULL');
-			$phone_private 	= 	$this->add_sql($_POST['phone_private'], 'NULL');
-			$phone_work 	= 	$this->add_sql($_POST['phone_work'], 'NULL');
-			$birthday 		= 	$this->add_sql($_POST['birthday'], 'NULL');
-			$birthplace 	= 	$this->add_sql($_POST['birthplace'], 'NULL');
-			$position 		= 	$this->add_sql($_POST['position'], 'NULL');
-			$education 		= 	$this->add_sql($_POST['education'], 'NULL');
-			$education_add 	= 	$this->add_sql($_POST['education_add'], 'NULL');
-			$login 			= 	$this->add_sql($_POST['login'], 'NULL');
+			$name_f 		= 	$this->defenseSQL($_POST['name_f'], 'NULL');
+			$name_i 		=	$this->defenseSQL($_POST['name_i'], 'NULL');
+			$name_o 		= 	$this->defenseSQL($_POST['name_o'], 'NULL');
+			$email 			= 	$this->defenseSQL($_POST['email'], 'NULL');
+			$phone_private 	= 	$this->defenseSQL($_POST['phone_private'], 'NULL');
+			$phone_work 	= 	$this->defenseSQL($_POST['phone_work'], 'NULL');
+			$birthday 		= 	$this->defenseSQL($_POST['birthday'], 'NULL');
+			$birthplace 	= 	$this->defenseSQL($_POST['birthplace'], 'NULL');
+			$position 		= 	$this->defenseSQL($_POST['position'], 'NULL');
+			$education 		= 	$this->defenseSQL($_POST['education'], 'NULL');
+			$education_add 	= 	$this->defenseSQL($_POST['education_add'], 'NULL');
+			$login 			= 	$this->defenseSQL($_POST['login'], 'NULL');
 
 			$this->db->exec("UPDATE user SET
 				name_f = $name_f,
@@ -177,26 +173,17 @@ class Personal extends Model{
 				WHERE login = $login");
 			break;
 			case 'password' :
-			$login	= $this->defense($_POST['login']);
-			if($_POST['new_password'] == $_POST['repeat_password']) {
-				$password = password_hash($_POST['new_password'],PASSWORD_DEFAULT);
-			}
-			$cond = password_verify($_POST['old_password'],$this->db->query("SELECT password FROM user WHERE login = '{$login}'")->fetchColumn());
-			
-			if($cond) {
-				$this->db->exec("UPDATE user SET password = '{$password}' WHERE login = '{$login}'");
-			}
-
+			$this->setPassword($_POST['new_password'],$_POST['repeat_password'],$_POST['old_password']);
 			break;
 			case 'docs' :
-			$login = $this->defense($_SESSION['login']);
+			$login = $this->defenseStr($_SESSION['login']);
 			for($i = 0; $i < count($_POST['comment']); $i++) {
 				if(!empty($_FILES['img']['size'][$i])) {
 
 					if ($_FILES['img']['error'][$i] === 0) {
 
 						if($_FILES['img']['type'][$i] == 'image/jpeg' || $_FILES['img']['type'][$i] == 'image/png') {
-							$comment = $this->add_sql($_POST['comment'][$i],'NULL');
+							$comment = $this->defenseSQL($_POST['comment'][$i],'NULL');
 							
 							$this->db->exec("INSERT INTO user_docs(login_user,doc_name,dt_insert) VALUES('$login',$comment,NOW())");
 
@@ -225,15 +212,21 @@ class Personal extends Model{
 
 
 	function getShow() {
-		if(($_GET['pdf'] = 1 && !empty($_GET['login'])) && (!empty($_GET['level']) && !empty($_GET['id']))) {
-			$data = $this->get_sertif_create($_GET['id'],$_GET['login'], $_GET['level']);
+		$data = $this->getSertifCreate($_GET['id'],$_GET['login'], $_GET['level']);
+		$mpdf = new Mpdf();
+		$date_end = date("d.m.Y", strtotime($data['date_end']));
 
-			if(!empty($data)) {
-				$data['level'] = $this->get_level();
-				require_once $_SERVER['DOCUMENT_ROOT']."/scripts/generation_pdf.php";
-			}
-			
-		}
+		$mpdf->AddPage('L');
+		$mpdf->SetTitle("{$data['ssapm']} - {$data['level']}");
+		$mpdf->SetSubject("{$data['ssapm']} - {$data['level']}");
+		$mpdf->WriteHTML('<div style="text-align: center;"><div><img style="width: 250px" src="/app/template/img/logo.png"></div><h1 style="font-size: 40px; text-transform: uppercase">Сертификат</h1>
+			<p style="font-size: 30px;">Настоящий сертификат подтверждает, что</p><h2>'.$data['name'].'</h2>
+			<p style="font-size: 30px;">сдал следующий кейс:</p>
+			<p style="font-size: 30px;">'.$data['ssapm'].'</p>
+			<p style="font-size: 30px;">на уровень: '.$data['level'].'</p>
+			</div>
+			<div><p style="text-align: center">Сертификат действует до: '.$date_end.'</p></div>');
+		$mpdf->Output();
 	}
 }
 ?>

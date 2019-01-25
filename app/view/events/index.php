@@ -59,6 +59,12 @@
 						<h3>Видео</h3>
 						<div class="block_video">
 						</div>
+						<div class="block_descr">
+							<textarea name="descr" id="descr"></textarea>
+							<script>
+								CKEDITOR.replace('descr');
+							</script>
+						</div>
 					</div>
 				</div>
 				<button>Сохранить</button>

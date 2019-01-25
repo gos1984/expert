@@ -14,102 +14,36 @@ class Reports extends Controller{
 
 	public function index() {
 		$data = $this->model->getReportsAll();
-		$this->view->output("index",$data);
+		$this->view->output("all",$data);
 	}
 	
 
-	function getQuantity() {
-		$data = array(
-			'page' => $this->model->get_page(),
-			'data' => $this->model->get_quantity(),
-			'title'=> array(
-				'login' => 'Логин',
-				'role_name' => 'Статус',
-				'name' => 'ФИО',
-				'count' => 'Общее кол-во',
-				'level1' => 'Кол-во ур-нь эксперт',
-				'level2' => 'Кол-во ур-нь эксперт-конс.',
-			),
-		);
-		return $data;
+	function quantity() {
+		$data = $this->model->getQuantity();
+		$this->view->output("quantity",$data);
 	}
 
-	function getVkk() {
-		$data = array(
-			'page' => $this->model->get_page(),
-			'data' => $this->model->get_all(),
-			'title' => array(
-				'login' => 'Логин',
-				'role_name' => 'Статус',
-				'name' => 'ФИО',
-				'email' => 'E-mail',
-				'phone_private' => 'Тел. личный',
-				'phone_work' => 'Тел. рабочий',
-				'state' => 'Статус теста',
-				'dt_create' => 'Дата тестирования',
-				'dt_public' => 'Дата публикации',
-				'quantity' => 'Кол-во проверяющих',
-				'result' => 'Результат',
-			),
-		);
-		return $data;
+	function vkk() {
+		$data = $this->model->getVkk();
+		$this->view->output("vkk",$data);
 	}
 
-	function getExperts() {
-		$data = array(
-			'page' => $this->model->get_page(),
-			'data' => $this->model->get_experts(),
-			'title' => array(
-				'name' => 'ФИО',
-				'exam_id' => '№ теста',
-				'attest_id' => '№ случая',
-				'level' => 'Уровень теста',
-				'dt_check' => 'Дата проверки',
-				'dt_public' => 'Дата публикации',
-				'summ' => 'Сумма(в руб.)',
-			),
-		);
-		return $data;
+	function experts() {
+		$data = $this->model->getExperts();
+		$this->view->output("experts",$data);
 	}
 
-	function getStudents() {
-		$data = array(
-			'page' => $this->model->get_page(),
-			'data' => $this->model->get_all(),
-			'title' => array(
-				'login' => 'Логин',
-				'role_name' => 'Статус',
-				'name' => 'ФИО',
-				'email' => 'E-mail',
-				'phone_private' => 'Тел. личный',
-				'phone_work' => 'Тел. рабочий',
-				'state' => 'Статус теста',
-				'dt_create' => 'Дата тестирования',
-				'dt_public' => 'Дата публикации',
-				'quantity' => 'Кол-во проверяющих',
-				'result' => 'Результат',
-			),
-		);
-		return $data;
+	function students() {
+		$data = $this->model->getStudents();
+		$this->view->output("students",$data);
 	}
 
-	function getDetail() {
-		$data = array(
-			'page' => $this->model->get_page(),
-			'data' => $this->model->get_detail(),
-			'title' => array(
-				'dt_check' => 'Дата проверки',
-				'attest_id' => '№ случая',
-				'exam_id' => '№ теста',
-				'modality' => 'Модальность',
-				'ssapm' => 'Системы стратификации и параметры измерения',
-				'summ' => 'Сумма(в руб.)',
-			),
-		);
-		return $data;
+	function detail() {
+		$data = $this->model->getDetail();
+		$this->view->output("detail",$data);
 	}
 
-	function getFile() {
+	function file() {
 		if(isset($_GET['file'])) {
 			$method = "get_{$_GET['file']}";
 			$data = $this->$method();

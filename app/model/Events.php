@@ -107,6 +107,7 @@ class Events extends Model{
 		}
 	}
 	function setEdit($action) {
+		print_r($_POST);die();
 		if(!empty($_POST)) {
 			$id 				= isset($_POST['id']) ? $this->defenseStr($_POST['id']) : NULL;
 			$name 				= $this->defenseSQL($_POST['name'],'NULL');

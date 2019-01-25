@@ -1,13 +1,12 @@
 <?php
 namespace app\model;
 use core\Model;
-use core\traits\{Defense,Modality,Ssapm,Page};
+use core\traits\{Defense,Modality,Ssapm,Page, Sort};
 use PDO;
 
 class Reports extends Model{
 
-	use Page;
-	use Defense;
+	use Page, Defense, Sort;
 
 	public function __construct() {
 		parent::__construct();
@@ -34,7 +33,7 @@ class Reports extends Model{
 		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
 			$reports['data'][] = $row;
 		}
-		$reports['page'] = $this->getPage($this->user['login'], $this->user['role']);
+		$reports['page'] = $this->getPage();
 		$reports['title'] = array(
 				'login' => 'Логин',
 				'role_name' => 'Статус',
@@ -52,8 +51,7 @@ class Reports extends Model{
 	}
 
 	public function getQuantity() {
-		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY login ASC";
-		$u = $this->db->query("SELECT
+		$r = $this->db->query("SELECT
 			ec.login,
 			CONCAT(u.name_f,' ',u.name_i,' ',u.name_o) AS name,
 			a.role_name,
@@ -64,20 +62,42 @@ class Reports extends Model{
 			INNER JOIN exam_check ec ON ec.exam_id = e.id
 			INNER JOIN access a ON a.user_login = ec.login
 			INNER JOIN user u ON u.login = ec.login
-			GROUP BY ec.login".$sort);
-		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
-			$users[] = $row;
+			GROUP BY ec.login".$this->getSort('login'));
+		while ($row = $r->fetch(PDO::FETCH_ASSOC)) {
+			$reports['data'][] = $row;
 		}
-		return $users;
+		$reports['page'] = $this->getPage();
+		$reports['title'] = array(
+				'login' => 'Логин',
+				'role_name' => 'Статус',
+				'name' => 'ФИО',
+				'count' => 'Общее кол-во',
+				'level1' => 'Кол-во ур-нь эксперт',
+				'level2' => 'Кол-во ур-нь эксперт-конс.',
+			);
+		return $reports;
 	}
 
 	public function getVkk() {
-		
+		$reports['page'] = $this->getPage();
+		$reports['title'] = array(
+				'login' => 'Логин',
+				'role_name' => 'Статус',
+				'name' => 'ФИО',
+				'email' => 'E-mail',
+				'phone_private' => 'Тел. личный',
+				'phone_work' => 'Тел. рабочий',
+				'state' => 'Статус теста',
+				'dt_create' => 'Дата тестирования',
+				'dt_public' => 'Дата публикации',
+				'quantity' => 'Кол-во проверяющих',
+				'result' => 'Результат',
+			);
+		return $reports;
 	}
 
 	public function getExperts() {
-		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY name_f ASC";
-		$u = $this->db->query("SELECT
+		$r = $this->db->query("SELECT
 			CONCAT(u.name_f,' ',u.name_i,' ',u.name_o) AS name,
 			(SELECT IF(e.level = 2,salary_level2,salary_level1) FROM setup) AS summ,
 			ec.exam_id,
@@ -87,16 +107,26 @@ class Reports extends Model{
 			DATE_FORMAT(e.dt_public,'%d.%m.%Y') AS dt_public
 			FROM exam_check ec
 			INNER JOIN exam e ON e.id = ec.exam_id
-			INNER JOIN user u ON u.login = ec.login".$sort);
-		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
-			$users[] = $row;
+			INNER JOIN user u ON u.login = ec.login".$this->getSort('name_f'));
+		while ($row = $r->fetch(PDO::FETCH_ASSOC)) {
+			$reports['data'][] = $row;
 		}
-		return $users;
+		$reports['page'] = $this->getPage();
+		$reports['title'] = array(
+				'name' => 'ФИО',
+				'exam_id' => '№ теста',
+				'attest_id' => '№ случая',
+				'level' => 'Уровень теста',
+				'dt_check' => 'Дата проверки',
+				'dt_public' => 'Дата публикации',
+				'summ' => 'Сумма(в руб.)',
+			);
+		return $reports;
 	}
 
 	public function getStudents() {
 		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY login ASC";
-		$u = $this->db->query("SELECT
+		$r = $this->db->query("SELECT
 			ec.login,
 			CONCAT(u.name_f,' ',u.name_i,' ',u.name_o) AS name,
 			a.role_name,
@@ -108,15 +138,28 @@ class Reports extends Model{
 			INNER JOIN access a ON a.user_login = ec.login
 			INNER JOIN user u ON u.login = ec.login
 			GROUP BY ec.login".$sort);
-		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
-			$users[] = $row;
+		while ($row = $r->fetch(PDO::FETCH_ASSOC)) {
+			$reports['data'][] = $row;
 		}
-		return $users;
+		$reports['page'] = $this->getPage();
+		$reports['title'] = array(
+				'login' => 'Логин',
+				'role_name' => 'Статус',
+				'name' => 'ФИО',
+				'email' => 'E-mail',
+				'phone_private' => 'Тел. личный',
+				'phone_work' => 'Тел. рабочий',
+				'state' => 'Статус теста',
+				'dt_create' => 'Дата тестирования',
+				'dt_public' => 'Дата публикации',
+				'quantity' => 'Кол-во проверяющих',
+				'result' => 'Результат',
+			);
+		return $reports;
 	}
 
 	public function getDetail() {
-		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY login ASC";
-		$u = $this->db->query("SELECT
+		$r = $this->db->query("SELECT
 			ec.login,
 			CONCAT(u.name_f,' ',u.name_i,' ',u.name_o) AS name,
 			DATE_FORMAT(ec.dt_check,'%d.%m.%Y') AS dt_check,
@@ -131,11 +174,20 @@ class Reports extends Model{
 			INNER JOIN attest a ON a.id = e.attest_id
 			INNER JOIN modality m ON m.id = a.modality_id
 			INNER JOIN ssapm s ON s.id = a.ssapm_id
-			".$sort);
-		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
-			$users[] = $row;
+			".$this->getSort('login'));
+		while ($row = $r->fetch(PDO::FETCH_ASSOC)) {
+			$reports['data'][] = $row;
 		}
-		return $users;
+		$reports['page'] = $this->getPage();
+		$reports['title'] = array(
+				'dt_check' => 'Дата проверки',
+				'attest_id' => '№ случая',
+				'exam_id' => '№ теста',
+				'modality' => 'Модальность',
+				'ssapm' => 'Системы стратификации и параметры измерения',
+				'summ' => 'Сумма(в руб.)'
+			);
+		return $reports;
 	}
 
 	public function getFile($title, $data) {
