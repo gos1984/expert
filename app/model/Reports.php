@@ -2,6 +2,7 @@
 namespace app\model;
 use core\Model;
 use core\traits\{Defense,Modality,Ssapm,Page, Sort};
+use app\other\XLS;
 use PDO;
 
 class Reports extends Model{
@@ -12,7 +13,7 @@ class Reports extends Model{
 		parent::__construct();
 	}
 
-	public function getReportsAll() {
+	public function getAll() {
 		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY login ASC";
 		$u = $this->db->query("SELECT
 			u.login,
@@ -191,7 +192,6 @@ class Reports extends Model{
 	}
 
 	public function getFile($title, $data) {
-		require_once $_SERVER['DOCUMENT_ROOT'].'/scripts/XLS.php';
 		$xls = new XLS($title, $data);
 		$xls->getFile();
 	}

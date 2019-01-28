@@ -1,7 +1,7 @@
 <?php //print_r($data); ?>
 <div class="block">
 	<h2>Проверяющие</h2>
-	<a href="/reports/file/file?file=experts" class="button">Скачать</a>
+	<a href="/reports/file?file=experts" class="button">Скачать</a>
 	<div class="table reports">
 		<div class="thead">
 			<div class="tr">

@@ -153,7 +153,7 @@ if(!isEmpty($('.validate'))) {
 	$('.validate').addEventListener('input', function(e) {
 
 		if(e.target.id === 'login') {
-			request('http://medexpert2.ru/account/registr/show?validation=login&login=' + e.target.value,function(arg) {
+			request('/show?validation=login&login=' + e.target.value,function(arg) {
 				if(!isEmpty(arg)) {
 					$('.error-login').textContent =  arg;
 					$('#login').setCustomValidity(arg);
@@ -165,7 +165,7 @@ if(!isEmpty($('.validate'))) {
 		}
 
 		if(e.target.id === 'email') {
-			request('http://medexpert2.ru/account/registr/show?validation=email&email=' + e.target.value,function(arg) {
+			request('/show?validation=email&email=' + e.target.value,function(arg) {
 				if(!isEmpty(arg)) {
 					$('.error-email').textContent =  arg;
 					$('#email').setCustomValidity(arg);

@@ -13,7 +13,7 @@ class Reports extends Controller{
 	}
 
 	public function index() {
-		$data = $this->model->getReportsAll();
+		$data = $this->model->getAll();
 		$this->view->output("all",$data);
 	}
 	
@@ -44,10 +44,11 @@ class Reports extends Controller{
 	}
 
 	function file() {
-		if(isset($_GET['file'])) {
-			$method = "get_{$_GET['file']}";
-			$data = $this->$method();
-			$this->model->get_file($data['title'],$data['data']);
+		$method = "get".ucfirst($_GET['file']);
+		if(method_exists($this->model, $method)) {
+			
+			$data = $this->model->$method();
+			$this->model->getFile($data['title'],$data['data']);
 		}
 	}
 }

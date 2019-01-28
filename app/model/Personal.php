@@ -61,8 +61,8 @@ class Personal extends Model{
 		while ($row = $d->fetch(PDO::FETCH_ASSOC)) {
 			$docs['docs'][] = $row;
 		}
+		$docs['page'] = $this->getPage($this->user['login'], $this->user['role']);
 		if(!empty($docs['docs'])) {
-			$docs['page'] = $this->getPage($this->user['login'], $this->user['role']);
 			$docs['title'] = array(
 				'doc_name'      => 'Наименование',
 				'dt_insert'     => 'Дата добавления',
@@ -74,7 +74,8 @@ class Personal extends Model{
 			);
 			return $docs;
 		}
-		return 'Загруженных документов нет';
+		$docs['docs'] = 'Загруженных документов нет';
+		return $docs;
 		
 	}
 
@@ -84,7 +85,6 @@ class Personal extends Model{
 	}
 
 	function getSertification() {
-		$data = null;
 		$s = $this->db->query("SELECT
 			s.id,
 			s.exam_id,
@@ -190,7 +190,7 @@ class Personal extends Model{
 							preg_match('/(.\w{3})$/',$_FILES['img']['name'][$i],$type);
 							$id = $this->db->lastInsertId();
 							$name_file = $id.$type[0];
-							$dir = "/img/docs/$login/";
+							$dir = "/app/template/img/docs/$login/";
 							if(is_dir($_SERVER['DOCUMENT_ROOT'].$dir)) {
 								$uploadfile = $_SERVER['DOCUMENT_ROOT'].$dir;
 							} else {

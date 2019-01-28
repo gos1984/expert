@@ -1,7 +1,7 @@
 <?php //print_r($data); ?>
 <div class="block">
 	<h2>Количество проверенных тестов</h2>
-	<a href="/reports/file/file?file=quantity" class="button">Скачать</a>
+	<a href="/reports/file?file=quantity" class="button">Скачать</a>
 	<div class="table reports">
 		<div class="thead">
 			<div class="tr">

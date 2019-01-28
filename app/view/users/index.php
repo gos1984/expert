@@ -3,7 +3,24 @@
 		<div class="thead">
 			<div class="tr">
 				<?php foreach($data['title'] as $key => $val) { ?>
-					<div class="th"><a href="<?php echo '/users'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a></div>
+					<div class="th">
+						<a href="<?php echo '/users'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a>
+						<div class="filter">
+							<?php if($key == "role_name") { ?>
+								<select name="role" data-find="<?php echo $key; ?>">
+									<option value=""></option>
+									<?php foreach($data['role'] as $r) { ?>
+										<option value="<?php echo $r['name']; ?>"><?php echo $r['name']; ?></option>
+									<?php } ?>	
+								</select>
+							<? } else { 
+								$type = $key == "medic" || $key == "dt_insert" ? "checkbox" : "text";
+							?>
+								<input type="<?php echo $type; ?>" data-find="<?php echo $key; ?>">
+
+							<?php } ?>
+						</div>
+					</div>
 				<?php } ?>
 				<div class="td"><button class="reset">Сбросить</button></div>
 			</div>

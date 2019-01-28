@@ -13,15 +13,18 @@ class Account extends Controller{
 	}
 
 	public function index() {
+		$this->model->getUser();
 		$this->view->output("index");
 	}
 
 	public function auth() {
+		$this->model->getUser();
 		$this->model->getAuth();
 		$this->view->output("auth");
 	}
 
 	public function registr() {
+		$this->model->getUser();
 		$this->view->output("registr");
 	}
 
@@ -32,11 +35,12 @@ class Account extends Controller{
 	}
 
 	public function forgot() {
+		$this->model->getUser();
 		$this->view->output("forgot");
 	}
 
 	public function show() {
-		$this->view->output("show");
+		$this->model->getShow();
 	}
 }
 ?>

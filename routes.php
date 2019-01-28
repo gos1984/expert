@@ -1,10 +1,12 @@
 <?php
 
 return array(
+	"^(/|)$" => "account/auth",
 	"^auth$" => "account/auth",
 	"^registr$" => "account/registr",
 	"^forgot$" => "account/forgot",
 	"^logout$" => "account/logout",
+	"^show\?.*$" => "account/show",
 
 	"^attestation(\/$|\?.*$|$)" => "attestation/index",
 	"^attestation/show\?.*$" => "attestation/show",
@@ -38,6 +40,7 @@ return array(
 	"^reports/experts$" => "reports/experts",
 	"^reports/quantity$" => "reports/quantity",
 	"^reports/detail$" => "reports/detail",
+	"^reports/file\?.*$" => "reports/file",
 	
 	"^users(\/$|\?.*$|$)" => "users/index",
 	"^experts(\/$|\?.*$|$)" => "users/experts",
