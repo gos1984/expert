@@ -107,14 +107,13 @@ class Events extends Model{
 		}
 	}
 	function setEdit($action) {
-		print_r($_POST);die();
 		if(!empty($_POST)) {
 			$id 				= isset($_POST['id']) ? $this->defenseStr($_POST['id']) : NULL;
 			$name 				= $this->defenseSQL($_POST['name'],'NULL');
 			$modality 			= $this->defenseSQL($_POST['modality'],'NULL');
 			$ssapm 				= $this->defenseSQL($_POST['ssapm'],'NULL');
 			$descr 				= $this->defenseSQL($_POST['descr'],'NULL');
-			$attest_before 		= explode(',',$this->defenseStr($_POST['attest_before']));
+			$attest_before 		= $this->defenseStr($_POST['attest_before']);
 			$image_max_count_level1 	= $this->defenseSQL($_POST['image_max_count_level1'],'NULL');
 			$image_max_count_level2 	= $this->defenseSQL($_POST['image_max_count_level2'],'NULL');
 			$files = null;
@@ -162,9 +161,11 @@ class Events extends Model{
 			}
 
 			if(!empty($attest_before)) {
+
 				$this->db->query("DELETE FROM attest_before WHERE attest_id= $id");
 				$request = "INSERT INTO attest_before(attest_id,attest_id_before)
 				VALUES";
+				$attest_before = explode(',',$attest_before);
 				for($i = 0; $i < count($attest_before); $i++) {
 					if($i < count($attest_before) - 1) {
 						$request .= "($id,{$attest_before[$i]}),";
@@ -213,6 +214,7 @@ class Events extends Model{
 			}
 
 			if(!empty($attest_before)) {
+				var_dump($attest_before);
 				$this->db->query("INSERT INTO attest_before(attest_id,attest_id_before)
 					SELECT '$id',a.id FROM attest a WHERE '$attest_before' LIKE CONCAT('%',a.id,'%')");
 			}

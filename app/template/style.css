@@ -1,16 +1,16 @@
 @font-face {
   font-family: 'opensans';
-  src: url("../fonts/opensans/opensans.woff") format("woff"), url("../fonts/opensans/opensans.ttf") format("truetype"), url("../fonts/opensans/opensans.svg#opensans") format("svg");
-  src: url("../fonts/opensans/opensans.eot");
-  src: url("../fonts/opensans/opensans.woff2") format("woff2"), url("../fonts/opensans/opensans.eot?#iefix") format("embedded-opentype");
+  src: url("/app/template/opensans/opensans.woff") format("woff"), url("/app/template/fonts/opensans/opensans.ttf") format("truetype"), url("/app/template/fonts/opensans/opensans.svg#opensans") format("svg");
+  src: url("/app/template/fonts/opensans/opensans.eot");
+  src: url("/app/template/fonts/opensans/opensans.woff2") format("woff2"), url("/app/template/fonts/opensans/opensans.eot?#iefix") format("embedded-opentype");
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: 'opensans-semibold';
-  src: url("../fonts/opensans-semibold/opensans-semibold.woff") format("woff"), url("../fonts/opensans-semibold/opensans-semibold.ttf") format("truetype"), url("../fonts/opensans-semibold/opensans-semibold.svg#opensans-semibold") format("svg");
-  src: url("../fonts/opensans-semibold/opensans-semibold.eot");
-  src: url("../fonts/opensans-semibold/opensans-semibold.woff2") format("woff2"), url("../fonts/opensans-semibold/opensans-semibold.eot?#iefix") format("embedded-opentype");
+  src: url("/app/template/fonts/opensans-semibold/opensans-semibold.woff") format("woff"), url("/app/template/fonts/opensans-semibold/opensans-semibold.ttf") format("truetype"), url("/app/template/fonts/opensans-semibold/opensans-semibold.svg#opensans-semibold") format("svg");
+  src: url("/app/template/fonts/opensans-semibold/opensans-semibold.eot");
+  src: url("/app/template/fonts/opensans-semibold/opensans-semibold.woff2") format("woff2"), url("/app/template/fonts/opensans-semibold/opensans-semibold.eot?#iefix") format("embedded-opentype");
   font-weight: normal;
   font-style: normal; }
 
@@ -139,7 +139,7 @@ hr {
       height: 15px;
       top: 12px;
       right: 10px;
-      background: url("../img/down.svg") no-repeat center center;
+      background: url("/app/template/img/down.svg") no-repeat center center;
       transition: all 0.3s ease;
       background-size: contain; }
     .label .select.active::after {
@@ -712,7 +712,7 @@ form.events {
           padding: 0;
           transition: all 0.3s ease;
           transform: scale(0.8);
-          background: url("../img/close.svg") no-repeat center center;
+          background: url("/app/template/img/close.svg") no-repeat center center;
           background-size: contain; }
           #popup .image.active .tools .close:hover {
             transform: scale(0.9); }
@@ -727,19 +727,19 @@ form.events {
           transform: scale(0.9); }
           #popup .image.active .tools i.full {
             top: 50px;
-            background: url("../img/full.svg") no-repeat center center;
+            background: url("/app/template/img/full.svg") no-repeat center center;
             background-size: contain; }
           #popup .image.active .tools i.zoom {
             top: 100px;
-            background: url("../img/zoom.svg") no-repeat center center;
+            background: url("/app/template/img/zoom.svg") no-repeat center center;
             background-size: contain; }
           #popup .image.active .tools i.zoom-in {
             top: 150px;
-            background: url("../img/zoom-in.svg") no-repeat center center;
+            background: url("/app/template/img/zoom-in.svg") no-repeat center center;
             background-size: contain; }
           #popup .image.active .tools i.zoom-out {
             top: 200px;
-            background: url("../img/zoom-out.svg") no-repeat center center;
+            background: url("/app/template/img/zoom-out.svg") no-repeat center center;
             background-size: contain; }
           #popup .image.active .tools i:hover {
             transform: scale(1); }
@@ -756,7 +756,7 @@ form.events {
     height: 200px;
     margin: 10px;
     cursor: pointer;
-    background: url("../img/pdf.svg") no-repeat center; }
+    background: url("/app/template/img/pdf.svg") no-repeat center; }
   #popup .close {
     position: absolute;
     top: 1%;
@@ -897,10 +897,10 @@ form.events {
     top: 5px;
     right: -5px; }
   .sort a.asc::before {
-    background: url("../img/down-arrow.svg") no-repeat;
+    background: url("/app/template/img/down-arrow.svg") no-repeat;
     background-size: contain; }
   .sort a.desc::before {
-    background: url("../img/up-arrow.svg") no-repeat;
+    background: url("/app/template/img/up-arrow.svg") no-repeat;
     background-size: contain; }
 
 .content {

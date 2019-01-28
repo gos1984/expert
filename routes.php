@@ -15,9 +15,6 @@ return array(
 
 	"^check$" => "attestation/check",
 	
-	
-	"^reports$" => "reports/index",
-	
 	"^setting$" => "setting/index",
 	"^setting/edit\?.*$" => "setting/edit",
 
@@ -32,6 +29,15 @@ return array(
 	"^personal/docs$" => "personal/docs",
 	"^personal/sertification$" => "personal/sertification",
 	"^personal/password$" => "personal/password",
+	"^personal/edit\?.*$" => "personal/edit",
+	"^personal/show\?.*$" => "personal/show",
+
+	"^reports$" => "reports/index",
+	"^reports/vkk$" => "reports/vkk",
+	"^reports/students$" => "reports/students",
+	"^reports/experts$" => "reports/experts",
+	"^reports/quantity$" => "reports/quantity",
+	"^reports/detail$" => "reports/detail",
 	
 	"^users(\/$|\?.*$|$)" => "users/index",
 	"^experts(\/$|\?.*$|$)" => "users/experts",

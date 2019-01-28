@@ -31,7 +31,7 @@ function fastEdit(parentElement) {
 	$$('.fast_edit').forEach(function(el,i) {
 		el.addEventListener('submit', function() {
 			formSubmit(parentElement,this, function() {
-				//location.reload();
+				location.reload();
 			});
 		});
 	});
@@ -287,7 +287,7 @@ if(!isEmpty($('#attests'))) {
 	$('#popup form').addEventListener('submit', function() {
 		formSubmit('#attests',this, function() {
 			popup.close('#popup');
-			//location.reload();
+			location.reload();
 		});
 	});
 }
@@ -399,7 +399,7 @@ if(!isEmpty($('#check'))) {
 	$('#popup form').addEventListener('submit', function() {
 		formSubmit('#check',this, function() {
 			popup.close('#popup');
-			//location.reload();
+			location.reload();
 		});
 	});
 
@@ -642,7 +642,7 @@ $('.close').addEventListener('click', function() {
 $('#popup form').addEventListener('submit', function() {
 	formSubmit('#users',this, function() {
 		popup.close('#popup');
-		//location.reload();
+		location.reload();
 	});
 });
 
@@ -774,7 +774,7 @@ if(!isEmpty($('#events'))) {
 				el.nextElementSibling.textContent = 'По данному случаю проводились аттестации!'
 			}
 			setTimeout(function() {
-				////location.reload();
+				location.reload();
 			}, 1000);
 		});
 	});
@@ -790,7 +790,7 @@ if(!isEmpty($('#events'))) {
 	$('#popup form').addEventListener('submit', function() {
 		formSubmit('#events',this, function() {
 			popup.close('#popup');
-			////location.reload();
+			location.reload();
 		});
 	});
 
@@ -971,7 +971,7 @@ if(!isEmpty($('#directory'))) {
 	$$('#directory form').forEach(function(el, i) {
 		el.addEventListener('submit', function() {
 			formSubmit('#directory',this, function() {
-				//location.reload();
+				location.reload();
 			});
 		});
 	});
@@ -983,7 +983,7 @@ if(!isEmpty($('#personal'))) {
 	if(!isEmpty($('#personal_data'))) {
 		$('#personal_data').addEventListener('submit', function() {
 			formSubmit('#personal_data',this, function() {
-				//location.reload();
+				location.reload();
 			});
 		});
 	}
@@ -991,7 +991,7 @@ if(!isEmpty($('#personal'))) {
 	if(!isEmpty($('#password_update'))) {
 		$('#password_update').addEventListener('submit', function() {
 			formSubmit('#password_update',this, function() {
-				//location.reload();
+				location.reload();
 			});
 		});
 	}
@@ -1057,7 +1057,7 @@ if(!isEmpty($('#personal'))) {
 
 		$('#education_docs').addEventListener('submit', function() {
 			formSubmit('#education_docs',this, function() {
-				//location.reload();
+				location.reload();
 			});
 		});
 
@@ -1084,7 +1084,7 @@ if(!isEmpty($('#setting'))) {
 	$$('form').forEach(function(el, i) {
 		el.addEventListener('submit', function() {
 			formSubmit('form',this, function() {
-				//location.reload();
+				location.reload();
 			});
 		});
 	});
