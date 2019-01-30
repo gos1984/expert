@@ -1,16 +1,16 @@
 @font-face {
   font-family: 'opensans';
-  src: url("/app/template/opensans/opensans.woff") format("woff"), url("/app/template/fonts/opensans/opensans.ttf") format("truetype"), url("/app/template/fonts/opensans/opensans.svg#opensans") format("svg");
-  src: url("/app/template/fonts/opensans/opensans.eot");
-  src: url("/app/template/fonts/opensans/opensans.woff2") format("woff2"), url("/app/template/fonts/opensans/opensans.eot?#iefix") format("embedded-opentype");
+  src: url("app/template/fonts/opensans/opensans.woff") format("woff"), url("app/template/fonts/opensans/opensans.ttf") format("truetype"), url("app/template/fonts/opensans/opensans.svg#opensans") format("svg");
+  src: url("app/template/fonts/opensans/opensans.eot");
+  src: url("app/template/fonts/opensans/opensans.woff2") format("woff2"), url("app/template/fonts/opensans/opensans.eot?#iefix") format("embedded-opentype");
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: 'opensans-semibold';
-  src: url("/app/template/fonts/opensans-semibold/opensans-semibold.woff") format("woff"), url("/app/template/fonts/opensans-semibold/opensans-semibold.ttf") format("truetype"), url("/app/template/fonts/opensans-semibold/opensans-semibold.svg#opensans-semibold") format("svg");
-  src: url("/app/template/fonts/opensans-semibold/opensans-semibold.eot");
-  src: url("/app/template/fonts/opensans-semibold/opensans-semibold.woff2") format("woff2"), url("/app/template/fonts/opensans-semibold/opensans-semibold.eot?#iefix") format("embedded-opentype");
+  src: url("app/template/fonts/opensans-semibold/opensans-semibold.woff") format("woff"), url("app/template/fonts/opensans-semibold/opensans-semibold.ttf") format("truetype"), url("app/template/fonts/opensans-semibold/opensans-semibold.svg#opensans-semibold") format("svg");
+  src: url("app/template/fonts/opensans-semibold/opensans-semibold.eot");
+  src: url("app/template/fonts/opensans-semibold/opensans-semibold.woff2") format("woff2"), url("app/template/fonts/opensans-semibold/opensans-semibold.eot?#iefix") format("embedded-opentype");
   font-weight: normal;
   font-style: normal; }
 
@@ -787,7 +787,7 @@ form.events {
         width: 100%; }
       #popup form.edit_form textarea, #popup form.add_events textarea {
         width: 100%;
-        max-width: 300px; }
+        min-height: 160px; }
     #popup form .block_data {
       display: flex;
       flex-wrap: wrap;
@@ -917,7 +917,13 @@ form.events {
   .table .thead {
     display: table-header-group; }
     .table .thead .tr .th {
-      padding: 0 0 15px; }
+      padding: 5px;
+      vertical-align: top; }
+      .table .thead .tr .th a {
+        display: block;
+        height: 60px; }
+      .table .thead .tr .th input, .table .thead .tr .th select {
+        height: 50px; }
     .table .thead .tr .th, .table .thead .tr .td {
       border-bottom: 1px solid rgba(51, 51, 51, 0.2); }
   .table .tbody {

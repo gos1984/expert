@@ -66,10 +66,9 @@ class Users extends Model{
 		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
 			$user['experts'][] = $row;
 		}
-		$user = array(
-			'page' => $this->getPage(),
-			'role' => $this->getRole(),
-			'title' => array(
+		$user['page'] = $this->getPage();
+		$user['role'] = $this->getRole();
+		$user['title'] = array(
 				'name_f'		=> '№ случая',
 				'login' 		=> 'Логин',
 				'fio' 			=> 'ФИО',
@@ -77,8 +76,7 @@ class Users extends Model{
 				'phone_private' => 'Телефон личный',
 				'phone_work' 	=> 'Телефон рабочий',
 				'role_name'		=> 'Разрешение проверять случай',
-			)
-		);
+			);
 		return $user;
 	}
 
@@ -143,7 +141,7 @@ class Users extends Model{
 
 			}
 			break;
-			case 'create':
+			case 'create_expert':
 				$login = $this->defenseSQL($_POST['login']);
 				$attest_id = $this->defenseStr($_POST['attest_id']);
 				$medic = isset($_POST['enable']) ? 1 : 0;

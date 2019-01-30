@@ -19,8 +19,8 @@ class Account extends Controller{
 
 	public function auth() {
 		$this->model->getUser();
-		$this->model->getAuth();
-		$this->view->output("auth");
+		$data = $this->model->getAuth();
+		$this->view->output("auth",$data);
 	}
 
 	public function registr() {

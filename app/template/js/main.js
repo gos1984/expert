@@ -655,13 +655,13 @@ function addVideo(parent) {
 	var video = new BuildElements(parent).create('div','files');
 	var files = new BuildElements(video.lastEl).create('label').attr('for','video');
 	var videoFile = new BuildElements(files.lastEl)
-		.create('img')
-		.attr('src','/app/template/img/play.svg')
-		.create('input')
-		.attr('id','video')
-		.attr('type','file')
-		.attr('name','video')
-		.create('span','info','Загрузите видео в формате MP4');
+	.create('img')
+	.attr('src','/app/template/img/play.svg')
+	.create('input')
+	.attr('id','video')
+	.attr('type','file')
+	.attr('name','video')
+	.create('span','info','Загрузите видео в формате MP4');
 }
 
 function filesChange() {
@@ -1001,23 +1001,23 @@ if(!isEmpty($('#personal'))) {
 		function addFormDoc() {
 			images.create('div','doc');
 			var doc = new BuildElements(images.lastEl)
-				.create('label','document')
-				.attr('for','img' + count);
+			.create('label','document')
+			.attr('for','img' + count);
 			var childImages = new BuildElements(doc.lastEl)
-				.create('img')
-				.attr('src','/app/template/img/photo.svg')
-				.create('input','image')
-				.attr('id','img' + count)
-				.attr('type','file');
+			.create('img')
+			.attr('src','/app/template/img/photo.svg')
+			.create('input','image')
+			.attr('id','img' + count)
+			.attr('type','file');
 			if($('.files').childElementCount <= 1) {
 				childImages.attr('required',true);
 			}
 			doc.create('div','comment');
 			new BuildElements(doc.lastEl)
-				.create('label','h3','Наименование документа')
-				.attr('for','comment' + count)
-				.create('textarea','docs_name')
-				.attr('id','comment' + count);
+			.create('label','h3','Наименование документа')
+			.attr('for','comment' + count)
+			.create('textarea','docs_name')
+			.attr('id','comment' + count);
 
 			//childImages.attr('name','comment[]');
 			count++;
@@ -1120,3 +1120,48 @@ $$('input[type="tel"]').forEach(function(el, i) {
 	});
 	
 });
+
+if(!isEmpty($('.filter'))) {
+	var FilterArray = {};
+	$('.filter').addEventListener('input', function(e) {
+		if(e.target.hasAttribute('data-find')) {
+			var key = e.target.getAttribute('data-find'),
+			value = e.target.type === "checkbox" ? e.target.checked : e.target.value.toLowerCase();
+			FilterArray[key] = value;
+		}
+		for(var el in FilterArray) {
+			$$('.' + el).forEach(function(element) {
+				var bool = element.type === "checkbox" ? FilterArray[el] !== element.checked :  element.value.toLowerCase().indexOf(FilterArray[el]) === -1;
+
+				if(bool) {
+					element.parentElement.classList.add('hide');
+				} else {
+					element.parentElement.classList.remove('hide');
+				}
+
+			});
+		}
+		$$('.tbody .tr').forEach(function(tr) {
+			var quanHide = tr.querySelectorAll('.hide').length;
+			if(quanHide > 0) {
+				tr.classList.add('hidden');
+			} else {
+				tr.classList.remove('hidden');
+			}
+		});
+	});
+
+
+	$('.reset').addEventListener('click', function(e) {
+		this.parentElement.parentElement.querySelectorAll('.find').forEach(function(el) {
+			if(el.firstElementChild.type === 'checkbox') {
+				el.firstElementChild.checked = false;
+			} else {
+				el.firstElementChild.value = '';
+			}
+			$$('.tbody .tr').forEach(function(tr) {
+				tr.classList.remove('hidden');
+			});
+		});
+	});
+} // filter

@@ -20,12 +20,12 @@ class Account extends Model{
 
 			if(!empty($user)) {
 				if(password_verify($_POST['password'],$user['password'])) {
-					$_SESSION = [
+					$_SESSION = Array(
 						'login' => $user['login'],
 						'role' => $user['role_name'],
 						'medic' => $user['medic'],
-					];
-					$this->user  = array(
+					);
+					$this->user  = Array(
 						'login' =>  $user['login'],
 						'role'  => $user['role_name']
 					);

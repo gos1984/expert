@@ -4,14 +4,14 @@
 		<div class="thead">
 			<div class="tr">
 				<?php foreach($data['title'] as $key => $val) { ?>
-					<div class="th"><a href="<?php echo '/users/experts'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a></div>
+					<div class="th"><a href="<?php echo '/experts'.sortOrder($key); ?>" class="asc"><?php echo $val; ?></a></div>
 				<?php } ?>
 				<div class="td"><button class="reset">Сбросить</button></div>
 			</div>
 		</div>
 			<div class="tbody">
 				<?php foreach($data['experts'] as $u => $user) { ?>
-					<form class="tr fast_edit expert" action="javascript:void(null);" data-href="/users/users/edit?action=create_expert">
+					<form class="tr fast_edit expert" action="javascript:void(null);" data-href="/users/edit?action=create_expert">
 						<div class="td"><input type="text" readonly name="attest_id" value="<?php echo $user['attest_id']; ?>"></div>
 						<div class="td"><input type="text" readonly name="login" value="<?php echo $user['login']; ?>"></div>
 						<div class="td"><input type="text" readonly name="fio" value="<?php echo $user['fio']; ?>"></div>
