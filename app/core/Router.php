@@ -24,9 +24,10 @@ class Router{
 				
 				try{
 					$result = call_user_func_array(array($classController, $action), $urlStructure);
+
 				} catch(Exception $e) {
-					echo "Проблема в router";
-					var_dump($e);
+					echo $e;
+					
 				}
 				if($result != null) {
 					break;

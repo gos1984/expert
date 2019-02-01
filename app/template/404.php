@@ -39,7 +39,7 @@
 		<h1>404</h1>
 		<div class="center">
 			<p>Такой страницы не существует, через несколько секунд вы будете перенаправлены на главную страницу!</p>
-			<a href="/" class="button">Не ждать</a>
+			<a href="/auth" class="button">Не ждать</a>
 		</div>
 		<div class="image">
 			<img src="/app/template/img/404.jpg" alt="">

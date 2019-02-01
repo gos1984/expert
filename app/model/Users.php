@@ -75,7 +75,7 @@ class Users extends Model{
 				'email' 		=> 'E-mail',
 				'phone_private' => 'Телефон личный',
 				'phone_work' 	=> 'Телефон рабочий',
-				'role_name'		=> 'Разрешение проверять случай',
+				'enable'		=> 'Разрешение проверять случай',
 			);
 		return $user;
 	}
