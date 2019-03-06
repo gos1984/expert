@@ -3,7 +3,7 @@ namespace core;
 use app\controller;
 
 class Router{
-	static $routes;
+	private static $routes;
 
 	private static function getURL() {
 		self::$routes = include(ROOT."/routes.php");

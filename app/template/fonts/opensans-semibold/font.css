@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'OpenSans-Semibold';
+  src: url('OpenSans-Semibold.woff') format('woff'),
+       url('OpenSans-Semibold.ttf') format('truetype'),
+       url('OpenSans-Semibold.svg#OpenSans-Semibold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'opensans-semibold';
+  src: url('opensans-semibold.eot');
+  src: url('opensans-semibold.woff2') format('woff2'),
+       url('opensans-semibold.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+

@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'OpenSans';
+  src: url('OpenSans.woff') format('woff'),
+       url('OpenSans.ttf') format('truetype'),
+       url('OpenSans.svg#OpenSans') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'opensans';
+  src: url('opensans.eot');
+  src: url('opensans.woff2') format('woff2'),
+       url('opensans.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+

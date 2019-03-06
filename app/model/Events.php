@@ -79,7 +79,7 @@ class Events extends Model{
 					'name' => 'Наименование случая',
 					'modality' => 'Модальность',
 					'ssapm' => 'Системы стратификации и параметры измерения',
-					'descr' => 'Описание задания',
+					//'descr' => 'Описание задания',
 					'image_max_count_level1' => 'Количество картинок (шт.) ур.1',
 					'image_max_count_level2' => 'Количество картинок (шт.) ур.2',
 					'public' => 'Опубликовать',
@@ -112,7 +112,7 @@ class Events extends Model{
 			$name 				= $this->defenseSQL($_POST['name'],'NULL');
 			$modality 			= $this->defenseSQL($_POST['modality'],'NULL');
 			$ssapm 				= $this->defenseSQL($_POST['ssapm'],'NULL');
-			$descr 				= $this->defenseSQL($_POST['descr'],'NULL');
+			$descr 				= $this->defenseDescr($_POST['descr'],'NULL');
 			$attest_before 		= $this->defenseStr($_POST['attest_before']);
 			$image_max_count_level1 	= $this->defenseSQL($_POST['image_max_count_level1'],'NULL');
 			$image_max_count_level2 	= $this->defenseSQL($_POST['image_max_count_level2'],'NULL');

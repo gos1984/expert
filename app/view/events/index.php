@@ -78,9 +78,6 @@
 						<div class="block_descr">
 							<label for="descr">Описание</label>
 							<textarea name="descr" id="descr"></textarea>
-							<script>
-								//CKEDITOR.replace('descr');
-							</script>
 						</div>
 					</div>
 				</div>

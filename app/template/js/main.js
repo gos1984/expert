@@ -214,8 +214,8 @@ if(!isEmpty($('#attests'))) {
 				if(!isEmpty(arg.descr)) {
 					new BuildElements('.video')
 					.create('h3',null,'Описание задания')
-					.create('p','descr',arg.descr);
-					//CKEDITOR.replace('message');
+					.create('div','descr');
+					$('.descr').innerHTML = arg.descr;
 
 				}
 				if(!isEmpty(arg.image)) {
@@ -683,6 +683,12 @@ function filesChange() {
 
 
 if(!isEmpty($('#events'))) {
+	var editor = CKEDITOR.replace('descr',{'filebrowserBrowseUrl':'/kcfinder/browse.php?type=files',
+  'filebrowserImageBrowseUrl':'/app/template/js/kcfinder/browse.php?type=images',
+  'filebrowserFlashBrowseUrl':'/app/template/js/kcfinder/browse.php?type=flash',
+  'filebrowserUploadUrl':'/app/template/js/kcfinder/upload.php?type=files',
+  'filebrowserImageUploadUrl':'/app/template/js/kcfinder/upload.php?type=images',
+  'filebrowserFlashUploadUrl':'/app/template/js/kcfinder/upload.php?type=flash'});
 	$$('.more').forEach(function(el, i) {
 		el.addEventListener('click', function(e) {
 			e.preventDefault();
@@ -698,7 +704,7 @@ if(!isEmpty($('#events'))) {
 					}
 					switch(i) {
 						case 'descr' :
-						
+						editor.setData(arg.descr.descr);
 						break;
 						case 'modality':
 						case 'ssapm':
@@ -762,6 +768,9 @@ if(!isEmpty($('#events'))) {
 
 		});
 	});
+	editor.on('change', function(event) {
+		$('#descr').value = event.editor.getData();
+	});
 
 	$$('.del').forEach(function(el, i) {
 		el.addEventListener('click', function(event) {
@@ -784,6 +793,7 @@ if(!isEmpty($('#events'))) {
 		popup.close('#popup', function() {
 			$('.block_data').innerHTML = '';
 			$('.block_video').innerHTML = '';
+			editor.setData('');
 		});
 	});
 
@@ -810,6 +820,8 @@ if(!isEmpty($('#events'))) {
 				}
 				switch(i) {
 					case 'id':
+					break;
+					case 'descr':
 					break;
 					case 'modality':
 					case 'ssapm':
