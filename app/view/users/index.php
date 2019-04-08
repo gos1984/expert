@@ -31,7 +31,7 @@
 					<div class="td"><input type="text" readonly name="login" value="<?php echo $user['login']; ?>" class="login"></div>
 					<div class="td"><textarea readonly class="name_f"><?php echo "{$user['name_f']} {$user['name_i']} {$user['name_o']}"; ?></textarea></div>
 					<div class="td">
-						<select name="role" class="role role_name">
+						<select name="role_name" class="role role_name">
 							<?php foreach($data['role'] as $r) { ?>
 								<option value="<?php echo $r['name']; ?>" <?php echo $r['name'] == $user['role_name'] ? 'selected' : ''; ?>><?php echo $r['name']; ?></option>
 							<?php } ?>	

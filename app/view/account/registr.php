@@ -29,8 +29,7 @@
 			<span>Повторите пароль</span>
 			<input id="password_repeat" type="password" name="password_repeat" required="" minlength="6">
 		</label>
-		<span class="error error-password"></span>
-		
+		<?=$data?>
 		<label for="conf" class="confidential">
 			<input id="conf" type="checkbox" name="conf" required="">
 			<span>Согласование на обработку </span><a href="#" target="_blank">персональных данных</a>

@@ -429,7 +429,7 @@ if(!isEmpty($('#results'))) {
 
 				}
 				if(!isEmpty(arg.descr.video)) {
-					new BuildElements('.video')
+					var video = new BuildElements('.video')
 					.create('video')
 					.attr('src',arg.descr.video)
 					.attr('controls', true)

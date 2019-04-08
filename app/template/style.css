@@ -508,6 +508,13 @@ h4, .h4 {
   #education_docs textarea {
     max-width: none; }
 
+#testing .descr {
+  text-align: left; }
+  #testing .descr img {
+    max-width: 100% !important; }
+  #testing .descr p {
+    line-height: 1.5; }
+
 #testing form {
   margin: 20px auto;
   padding: 30px 0;

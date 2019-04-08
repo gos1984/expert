@@ -25,7 +25,8 @@ class Account extends Controller{
 
 	public function registr() {
 		$this->model->getUser();
-		$this->view->output("registr");
+		$data = $this->model->register();
+		$this->view->output("registr",$data);
 	}
 
 	public function logout() {
