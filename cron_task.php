@@ -38,10 +38,11 @@ if(isset($_GET['expert']) && isset($_GET['org'])) {
 			AND e.id 
 			AND NOT EXISTS(SELECT exam_id FROM sertif WHERE exam_id = e.id)");
 
-		$insertExpertWork = $dbh->exec("INSERT INTO expert_work(login,attest_id,enable)
+		$insertExpertWork = $dbh->exec("INSERT INTO expert_work(login,attest_id,purpose,enable)
 			SELECT
 			e.login,
 			e.attest_id,
+			0,
 			0
 			FROM exam e WHERE e.level = 2 
 			AND e.state_id = 4 

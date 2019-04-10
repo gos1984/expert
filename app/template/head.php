@@ -12,6 +12,7 @@ function sortOrder($sort) {
 	$order = !empty($_GET['order']) && $_GET['order'] == 'asc' ? 'desc' : 'asc';
 	return '?sort='.$sort.'&order='.(!empty($_GET['sort']) && $_GET['sort'] == $sort ? $order : 'asc');
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -30,7 +31,7 @@ function sortOrder($sort) {
 				<a href="/"><img src="/img/logo.png" alt=""></a>
 			</div>
 		</div>
-		<?php if(!empty($_SESSION)) { ?>
+		<?php if(!empty($_SESSION['login']) && !empty($_SESSION['role'])) { ?>
 			<div class="block">
 				<div class="account">
 					<p><?php echo 'Ваш логин: '.$_SESSION['login']; ?></p>

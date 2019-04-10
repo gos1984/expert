@@ -57,7 +57,7 @@ input {
   text-align: center;
   /* &:invalid{
 		border: 1px solid $red;
-	} */ }
+		} */ }
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]) {
     width: 100%;
     max-width: 300px;
@@ -574,7 +574,7 @@ form.events {
     display: flex;
     justify-content: center; }
 
-#popup {
+#popup, #expert {
   position: fixed;
   display: none;
   top: 5%;
@@ -588,44 +588,44 @@ form.events {
   padding: 3%;
   overflow: hidden;
   z-index: 10; }
-  #popup .wrap_popup {
+  #popup .wrap_popup, #expert .wrap_popup {
     text-align: center;
     background: #ffffff;
     box-shadow: inset 0 0 10px rgba(51, 51, 51, 0.3);
     height: 100%;
     padding: 30px;
     overflow-y: auto; }
-  #popup .h2 {
+  #popup .h2, #expert .h2 {
     display: block;
     text-align: center; }
-  #popup .block_video label img {
+  #popup .block_video label img, #expert .block_video label img {
     margin-left: 10%; }
-  #popup .block_video .files {
+  #popup .block_video .files, #expert .block_video .files {
     display: block; }
-  #popup .image_group {
+  #popup .image_group, #expert .image_group {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between; }
-    #popup .image_group .image, #popup .image_group .descript {
+    #popup .image_group .image, #popup .image_group .descript, #expert .image_group .image, #expert .image_group .descript {
       display: block;
       width: 45%; }
-    #popup .image_group .result {
+    #popup .image_group .result, #expert .image_group .result {
       display: inline-block;
       vertical-align: middle;
       margin: 10px; }
-  #popup .image {
+  #popup .image, #expert .image {
     display: inline-block;
     margin: 10px;
     cursor: pointer; }
-    #popup .image img {
+    #popup .image img, #expert .image img {
       width: 100%;
       height: auto; }
-    #popup .image p {
+    #popup .image p, #expert .image p {
       max-height: 120px;
       overflow-y: auto; }
-    #popup .image .image_wrap {
+    #popup .image .image_wrap, #expert .image .image_wrap {
       transition: all 0.3s ease; }
-    #popup .image.active {
+    #popup .image.active, #expert .image.active {
       position: fixed;
       display: flex;
       align-content: center;
@@ -641,7 +641,7 @@ form.events {
       padding: 30px;
       background: rgba(51, 51, 51, 0.9);
       z-index: 100; }
-      #popup .image.active .image_wrap {
+      #popup .image.active .image_wrap, #expert .image.active .image_wrap {
         position: relative;
         text-align: right;
         max-width: 80%;
@@ -649,7 +649,7 @@ form.events {
         padding: 10px;
         margin: 0 auto;
         overflow: hidden; }
-        #popup .image.active .image_wrap img {
+        #popup .image.active .image_wrap img, #expert .image.active .image_wrap img {
           display: inline-block;
           width: 100%;
           height: auto;
@@ -658,35 +658,35 @@ form.events {
           box-shadow: inset 0 0 10px rgba(51, 51, 51, 0.3);
           border-radius: 3px;
           z-index: 101; }
-        #popup .image.active .image_wrap.full {
+        #popup .image.active .image_wrap.full, #expert .image.active .image_wrap.full {
           width: 100%;
           max-width: none;
           height: auto;
           max-height: none;
           text-align: center;
           overflow: auto; }
-          #popup .image.active .image_wrap.full img {
+          #popup .image.active .image_wrap.full img, #expert .image.active .image_wrap.full img {
             width: max-content;
             height: max-content; }
-          #popup .image.active .image_wrap.full .close, #popup .image.active .image_wrap.full i {
+          #popup .image.active .image_wrap.full .close, #popup .image.active .image_wrap.full i, #expert .image.active .image_wrap.full .close, #expert .image.active .image_wrap.full i {
             position: fixed;
             top: 7%;
             right: 3%; }
-          #popup .image.active .image_wrap.full i.full {
+          #popup .image.active .image_wrap.full i.full, #expert .image.active .image_wrap.full i.full {
             top: 14%; }
-          #popup .image.active .image_wrap.full i.zoom {
+          #popup .image.active .image_wrap.full i.zoom, #expert .image.active .image_wrap.full i.zoom {
             top: 21%; }
-          #popup .image.active .image_wrap.full i.zoom-in {
+          #popup .image.active .image_wrap.full i.zoom-in, #expert .image.active .image_wrap.full i.zoom-in {
             top: 28%; }
-          #popup .image.active .image_wrap.full i.zoom-out {
+          #popup .image.active .image_wrap.full i.zoom-out, #expert .image.active .image_wrap.full i.zoom-out {
             top: 35%; }
-        #popup .image.active .image_wrap.zoom {
+        #popup .image.active .image_wrap.zoom, #expert .image.active .image_wrap.zoom {
           overflow: visible; }
-          #popup .image.active .image_wrap.zoom > img {
+          #popup .image.active .image_wrap.zoom > img, #expert .image.active .image_wrap.zoom > img {
             max-width: 60%;
             margin: 0 auto;
             cursor: cell; }
-          #popup .image.active .image_wrap.zoom .zoom_img {
+          #popup .image.active .image_wrap.zoom .zoom_img, #expert .image.active .image_wrap.zoom .zoom_img {
             position: absolute;
             top: 10%;
             left: -10%;
@@ -697,18 +697,18 @@ form.events {
             background: transparent;
             border-radius: 3px;
             z-index: 10; }
-            #popup .image.active .image_wrap.zoom .zoom_img img {
+            #popup .image.active .image_wrap.zoom .zoom_img img, #expert .image.active .image_wrap.zoom .zoom_img img {
               position: absolute;
               width: max-content;
               height: max-content;
               z-index: 0; }
-      #popup .image.active .tools {
+      #popup .image.active .tools, #expert .image.active .tools {
         position: absolute;
         top: 10%;
         right: 5%;
         width: 40px;
         height: 200px; }
-        #popup .image.active .tools .close {
+        #popup .image.active .tools .close, #expert .image.active .tools .close {
           top: 0;
           left: 0;
           background: transparent;
@@ -721,9 +721,9 @@ form.events {
           transform: scale(0.8);
           background: url("/app/template/img/close.svg") no-repeat center center;
           background-size: contain; }
-          #popup .image.active .tools .close:hover {
+          #popup .image.active .tools .close:hover, #expert .image.active .tools .close:hover {
             transform: scale(0.9); }
-        #popup .image.active .tools i {
+        #popup .image.active .tools i, #expert .image.active .tools i {
           position: absolute;
           display: block;
           left: 0;
@@ -732,83 +732,83 @@ form.events {
           height: 30px;
           transition: all 0.3s ease;
           transform: scale(0.9); }
-          #popup .image.active .tools i.full {
+          #popup .image.active .tools i.full, #expert .image.active .tools i.full {
             top: 50px;
             background: url("/app/template/img/full.svg") no-repeat center center;
             background-size: contain; }
-          #popup .image.active .tools i.zoom {
+          #popup .image.active .tools i.zoom, #expert .image.active .tools i.zoom {
             top: 100px;
             background: url("/app/template/img/zoom.svg") no-repeat center center;
             background-size: contain; }
-          #popup .image.active .tools i.zoom-in {
+          #popup .image.active .tools i.zoom-in, #expert .image.active .tools i.zoom-in {
             top: 150px;
             background: url("/app/template/img/zoom-in.svg") no-repeat center center;
             background-size: contain; }
-          #popup .image.active .tools i.zoom-out {
+          #popup .image.active .tools i.zoom-out, #expert .image.active .tools i.zoom-out {
             top: 200px;
             background: url("/app/template/img/zoom-out.svg") no-repeat center center;
             background-size: contain; }
-          #popup .image.active .tools i:hover {
+          #popup .image.active .tools i:hover, #expert .image.active .tools i:hover {
             transform: scale(1); }
-      #popup .image.active p {
+      #popup .image.active p, #expert .image.active p {
         display: none;
         margin: 30px 0;
         color: #ffffff;
         width: 100%; }
-      #popup .image.active .close {
+      #popup .image.active .close, #expert .image.active .close {
         width: auto; }
-  #popup .pdf_blank {
+  #popup .pdf_blank, #expert .pdf_blank {
     display: inline-block;
     width: 200px;
     height: 200px;
     margin: 10px;
     cursor: pointer;
     background: url("/app/template/img/pdf.svg") no-repeat center; }
-  #popup .close {
+  #popup .close, #popup .close-expert, #expert .close, #expert .close-expert {
     position: absolute;
     top: 1%;
     right: 0.5%; }
-  #popup .container {
+  #popup .container, #expert .container {
     justify-content: space-around;
     align-items: normal; }
-    #popup .container .block {
+    #popup .container .block, #expert .container .block {
       width: 50%; }
-  #popup form {
+  #popup form, #expert form {
     margin: 30px auto;
     max-width: 800px; }
-    #popup form label.radio {
+    #popup form label.radio, #expert form label.radio {
       display: inline-block;
       padding: 10px; }
-      #popup form label.radio input {
+      #popup form label.radio input, #expert form label.radio input {
         display: none; }
-    #popup form button {
+    #popup form button, #expert form button {
       display: block;
       margin: 30px auto; }
-    #popup form textarea {
+    #popup form textarea, #expert form textarea {
       max-width: 90%; }
-    #popup form.edit_form, #popup form.add_events {
+    #popup form.edit_form, #popup form.add_events, #expert form.edit_form, #expert form.add_events {
       margin: 0;
       max-width: none; }
-      #popup form.edit_form .files label, #popup form.add_events .files label {
+      #popup form.edit_form .files label, #popup form.add_events .files label, #expert form.edit_form .files label, #expert form.add_events .files label {
         display: block;
         width: 100%; }
-      #popup form.edit_form textarea, #popup form.add_events textarea {
+      #popup form.edit_form textarea, #popup form.add_events textarea, #expert form.edit_form textarea, #expert form.add_events textarea {
         width: 100%;
         min-height: 160px; }
-    #popup form .block_data {
+    #popup form .block_data, #expert form .block_data {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       text-align: left; }
-      #popup form .block_data label {
+      #popup form .block_data label, #expert form .block_data label {
         width: 40%; }
-      #popup form .block_data input, #popup form .block_data textarea, #popup form .block_data select {
+      #popup form .block_data input, #popup form .block_data textarea, #popup form .block_data select, #expert form .block_data input, #expert form .block_data textarea, #expert form .block_data select {
         display: block;
         width: 60%; }
-  #popup .description p {
+  #popup .description p, #expert .description p {
     white-space: pre;
     line-height: 21px; }
-  #popup #buy {
+  #popup #buy, #expert #buy {
     position: relative;
     width: 100%;
     height: 100%;
@@ -1092,3 +1092,10 @@ table {
 #reports .main-menu {
   width: 100%;
   max-width: none; }
+
+#expert table {
+  width: 400px;
+  margin: 20px auto; }
+  #expert table tr td {
+    width: 200px;
+    padding: 5px; }

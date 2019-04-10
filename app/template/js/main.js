@@ -504,17 +504,16 @@ if(!isEmpty($('#users'))) {
 
 			request(e.target.href,function(arg) {
 				var parentEl = $('#popup');
-				
 				var data = new BuildElements('.block_data');
 				for(i in arg.descr) {
 					data.create('label',null,arg.title[i]).attr('for',i);
 
 					switch(i) {
-						case 'role_name':
+						case 'role':
 						data.create('select').attr('id',i).attr('name',i);
 						childData = new BuildElements(data.lastEl);
 						for(j in arg.role) {
-							childData.create('option',null,arg.role[j].name).attr('value',arg.role[j].name);
+							childData.create('option',null,arg.role[j].name).attr('value',arg.role[j].id);
 							if(arg.role[j].name === arg.descr.role_name) {
 								childData.attr('selected', true);
 							}
@@ -639,6 +638,7 @@ $('.close').addEventListener('click', function() {
 	});
 });
 
+
 $('#popup form').addEventListener('submit', function() {
 	formSubmit('#users',this, function() {
 		popup.close('#popup');
@@ -647,8 +647,43 @@ $('#popup form').addEventListener('submit', function() {
 });
 
 fastEdit('#users');
+
+
+
 }
 
+if(!isEmpty($('.expert_purpose'))) {
+
+	$$('.expert_purpose').forEach(function(el, i) {
+		el.addEventListener('click', function(e) {
+			e.preventDefault();
+			request(e.target.href,function(arg) {
+				$$('#purpose_expert input[type="checkbox"]').forEach(function(element, idx) {
+					if(arg.indexOf(element.value) !== -1) {
+						element.checked = true;
+					}
+				});
+			});
+			popup.open("#expert");
+			$('#login_name').value = el.getAttribute('data-login'); 
+		});
+	});
+
+	$('#purpose_expert').addEventListener('submit', function() {
+		formSubmit('#users',this, function() {
+			popup.close('#expert');
+		location.reload();
+	});
+	});
+
+	$('.close-expert').addEventListener('click', function() {
+		popup.close('#expert', function() {
+		});
+		$$('#purpose_expert input[type="checkbox"]').forEach(function(element, idx) {
+			element.checked = false;
+		});
+	});
+}
 
 
 function addVideo(parent) {
@@ -684,11 +719,11 @@ function filesChange() {
 
 if(!isEmpty($('#events'))) {
 	var editor = CKEDITOR.replace('descr',{'filebrowserBrowseUrl':'/kcfinder/browse.php?type=files',
-  'filebrowserImageBrowseUrl':'/app/template/js/kcfinder/browse.php?type=images',
-  'filebrowserFlashBrowseUrl':'/app/template/js/kcfinder/browse.php?type=flash',
-  'filebrowserUploadUrl':'/app/template/js/kcfinder/upload.php?type=files',
-  'filebrowserImageUploadUrl':'/app/template/js/kcfinder/upload.php?type=images',
-  'filebrowserFlashUploadUrl':'/app/template/js/kcfinder/upload.php?type=flash'});
+		'filebrowserImageBrowseUrl':'/app/template/js/kcfinder/browse.php?type=images',
+		'filebrowserFlashBrowseUrl':'/app/template/js/kcfinder/browse.php?type=flash',
+		'filebrowserUploadUrl':'/app/template/js/kcfinder/upload.php?type=files',
+		'filebrowserImageUploadUrl':'/app/template/js/kcfinder/upload.php?type=images',
+		'filebrowserFlashUploadUrl':'/app/template/js/kcfinder/upload.php?type=flash'});
 	$$('.more').forEach(function(el, i) {
 		el.addEventListener('click', function(e) {
 			e.preventDefault();

@@ -7,7 +7,7 @@ abstract class Model {
 	protected $user;
 	public function __construct() {
 		$this->db = DB::getInstance();
-		if(!empty($_SESSION['login'])) {
+		if(!empty($_SESSION['login']) && !empty($_SESSION['role'])) {
 			$this->user = array(
 				'login' => 	$_SESSION['login'],
 				'role' 	=>	$_SESSION['role']

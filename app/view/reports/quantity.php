@@ -14,7 +14,7 @@
 			<?php foreach($data['data'] as $key => $val) { ?>
 				<div class="tr">
 					<div class="td"><?php echo $val['login']; ?></div>
-					<div class="td"><?php echo $val['role_name']; ?></div>
+					<div class="td"><?php echo $val['role']; ?></div>
 					<div class="td"><?php echo $val['name']; ?></div>
 					<div class="td"><?php echo $val['count']; ?></div>
 					<div class="td"><?php echo $val['level1']; ?></div>

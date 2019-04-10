@@ -1,34 +1,42 @@
 <?php
 namespace app\model;
-use core\Model;
-use core\traits\Defense;
+use core\{Model, Mailer};
+use core\traits\{Defense, Hex};
 use PDO;
 
 class Account extends Model{
-	use Defense;
+	use Defense, Hex;
+	private $mail;
 	public function __construct() {
 		parent::__construct();
+		$this->mail = new Mailer();
 	}
 
-    public function getAuth() {
+	public function getAuth() {
 		if(!empty($_POST)) {
+
 			$login = $this->defenseStr($_POST['login']);
 			$user = $this->db->query("SELECT
-				u.login, u.password, u.name_f, u.name_i, u.name_o, a.role_name,u.medic
+				u.login, u.password, u.name_f, u.name_i, u.name_o, r.name AS role, u.active_hex, u.medic
 				FROM user u
-				INNER JOIN access a ON
-				a.user_login = u.login WHERE login = '{$login}'")->fetch(PDO::FETCH_ASSOC);
+				INNER JOIN access a ON a.user_login = u.login
+				INNER JOIN role r ON a.role_id = r.id
+				WHERE login = '{$login}'")->fetch(PDO::FETCH_ASSOC);
 
 			if(!empty($user)) {
+				if(isset($user['active_hex'])) {
+					$data = "Аккаунт не активирован, активируйте аккаунт и попробуйте снова!";
+					return $data;
+				}
 				if(password_verify($_POST['password'],$user['password'])) {
 					$_SESSION = Array(
 						'login' => $user['login'],
-						'role' => $user['role_name'],
+						'role' => $user['role'],
 						'medic' => $user['medic'],
 					);
 					$this->user  = Array(
 						'login' =>  $user['login'],
-						'role'  => $user['role_name']
+						'role'  => $user['role']
 					);
 					$this->getUser();
 				} else {
@@ -54,7 +62,7 @@ class Account extends Model{
 	}
 
 
-    public function getShow() {
+	public function getShow() {
 		if(!empty($_GET)) {
 			switch($_GET['validation']) {
 				case 'login' :
@@ -99,24 +107,81 @@ class Account extends Model{
 			$phone = $this->defenseStr($_POST['phone']);
 			$password = $this->defenseStr($_POST['password']);
 			$password_repeat = $this->defenseStr($_POST['password_repeat']);
-
 			$password = password_hash($this->defenseStr($_POST['password']),PASSWORD_DEFAULT);
 
-			$add_user = $this->db->exec("INSERT INTO user(login, password, name_f, name_i, name_o, dt_reg, email, phone_private) VALUES (
-				'$login', '$password', '$name[0]', '$name[1]', '$name[2]', NOW(),'$email', '$phone')");
-			$add_access = $this->db->exec("INSERT INTO access(user_login, role_name) VALUES ('$login','Аттестуемый')");
-			if($add_user) {
-				header("refresh:5;url=/");
-				$data = "<span class=\"result ok\">Регистрация прошла успешно!</span>";
-				return $data;
+			$hex = $this->getHex();
+
+			$add_user = $this->db->exec("INSERT INTO user(login, password, name_f, name_i, name_o, dt_reg, email, phone_private, active_hex) VALUES (
+				'$login', '$password', '$name[0]', '$name[1]', '$name[2]', NOW(),'$email', '$phone', '$hex')");
+			$add_access = $this->db->exec("INSERT INTO access(user_login, role_id) VALUES ('$login',2)");
+			
+			$this->mail->sendConfirm($login, $email, $hex);
+			header( "refresh:3;url=/auth" ); 
+			return "Регистрация прошла успешно!<br/> К вам на почту отправлена ссылка активации аккаунта";
+		}
+	}
+
+	public function confirm() {
+		$login = $this->defenseStr($_GET['login']);
+		$email = $this->defenseStr($_GET['email']);
+		$hex = $this->defenseStr($_GET['hex']);
+		$user = $this->db->query("SELECT email FROM user WHERE login = '$login' AND active_hex = '$hex'")->fetchColumn();
+
+		if(is_bool($user)) {
+			header("Location: /auth", true, 301);
+			exit();
+		}
+		if($user == $email) {
+			header("Location: /entry", true, 301);
+			$this->db->exec("UPDATE user SET active_hex = NULL WHERE login = '$login'");
+			$_SESSION['confirm'] = true;
+			exit();
+		}
+	}
+
+	public function entry() {
+		if(isset($_SESSION['confirm'])) {
+			return "Активация прошла успешна. Для доступа к анкете войдите в свою учётную запись.";
+		}
+		header("Location: /auth", true, 301);
+		exit();
+	}
+
+	public function forgot() {
+		if(!empty($_POST)) {
+			$email = $this->defenseStr($_POST['email']);
+			$user = $this->db->query("SELECT login FROM user WHERE email = '$email'")->fetchColumn();
+			if(is_bool($user)) {
+				return "Пользователя с таким email не существует, пройдите регистрацию.";
+			} else {
+				$this->mail->sendForgot($user,$email);
+				header( "refresh:3;url=/auth");
+				return "Ссылка на восстановление пароля отправлена вам на электронную почту.";
 			}
 		}
 	}
 
-	public function test() {
-	    $x = 2;
-
-	    $y = $x;
-    }
+	public function password() {
+		if(!empty($_GET['login']) && !empty($_GET['login'])) {
+			header("Location: /password", true, 301);
+			$_SESSION = [
+				'login' => $this->defenseStr($_GET['login']),
+				'email' => $this->defenseStr($_GET['email']),
+			];
+		}
+		
+		if(!empty($_POST)) {
+			$password = $this->defenseStr($_POST['password']);
+			$password_repeat = $this->defenseStr($_POST['password_repeat']);
+			if($password != $password_repeat) {
+				return "Пароли не совпадают";
+			} else {
+				$password = password_hash($password, PASSWORD_DEFAULT);
+				$this->db->exec("UPDATE user SET password = '$password' WHERE login = '{$_SESSION['login']}'");
+				header( "refresh:3;url=/auth" ); 
+				return "Пароль изменён!";
+			}
+		}
+	}
 }
 ?>

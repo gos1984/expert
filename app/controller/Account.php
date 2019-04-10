@@ -36,8 +36,22 @@ class Account extends Controller{
 	}
 
 	public function forgot() {
-		$this->model->getUser();
-		$this->view->output("forgot");
+		$data = $this->model->forgot();
+		$this->view->output("forgot", $data);
+	}
+
+	public function confirm() {
+		$this->model->confirm();
+	}
+
+	public function entry() {
+		$data = $this->model->entry();
+		$this->view->output("entry",$data);
+	}
+
+	public function password() {
+		$data = $this->model->password();
+		$this->view->output("password",$data);
 	}
 
 	public function show() {

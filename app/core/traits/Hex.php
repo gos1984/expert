@@ -1,8 +1,8 @@
 <?php
+namespace core\traits;
 
 trait Hex {
 	private $hex;
-
 	public function getHex() {
 		$length = rand(1,5);
 		for($i=0; $i<$length; $i++) {

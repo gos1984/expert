@@ -1,34 +1,31 @@
 <?php
 
 namespace core\traits;
+
 use PDO;
 
-trait Page {
-	
+trait Page
+{
+
 	private $pages;
-	
-	public function getPage() {
-		$p = $this->db->query("SELECT 
-			p.id,
-			p.page,
-			p.href
-			FROM page p
-			INNER JOIN (SELECT priority FROM role WHERE name = '{$this->user['role']}') t1 ON t1.priority <= p.priority
-			UNION
-			SELECT
-			p.id,
-			p.page,
-			p.href
-			FROM page p
-			LEFT JOIN(SELECT login, COUNT(enable) AS count FROM expert_work WHERE enable = 1) t2 ON t2.login = '{$this->user['login']}'
-			WHERE p.priority = 2 AND t2.login IS NOT NULL
 
-			");
-		while ($row = $p->fetch(PDO::FETCH_ASSOC)) {
-			$this->pages[] = $row;
+	public function getPage()
+	{
+		$p = $this->db->query("SELECT
+			p.id,
+			p.page,
+			p.href
+			FROM page p
+			WHERE CASE (SELECT role_id FROM access WHERE user_login = '{$this->user['login']}')
+			WHEN 1 THEN p.id 
+			WHEN 2 THEN p.id IN (4,6)
+			WHEN 3 THEN p.id IN (4,5,6)
+			END");
+			while ($row = $p->fetch(PDO::FETCH_ASSOC)) {
+				$this->pages[] = $row;
+			}
+			return $this->pages;
 		}
-		return $this->pages;
 	}
-}
 
-?>
+	?>

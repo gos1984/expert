@@ -15,7 +15,7 @@
 								</select>
 							<? } else { 
 								$type = $key == "medic" || $key == "dt_insert" ? "checkbox" : "text";
-							?>
+								?>
 								<input type="<?php echo $type; ?>" data-find="<?php echo $key; ?>">
 
 							<?php } ?>
@@ -31,9 +31,9 @@
 					<div class="td"><input type="text" readonly name="login" value="<?php echo $user['login']; ?>" class="login"></div>
 					<div class="td"><textarea readonly class="name_f"><?php echo "{$user['name_f']} {$user['name_i']} {$user['name_o']}"; ?></textarea></div>
 					<div class="td">
-						<select name="role_name" class="role role_name">
+						<select name="role" class="role role_name">
 							<?php foreach($data['role'] as $r) { ?>
-								<option value="<?php echo $r['name']; ?>" <?php echo $r['name'] == $user['role_name'] ? 'selected' : ''; ?>><?php echo $r['name']; ?></option>
+								<option value="<?php echo $r['id']; ?>" <?php echo $r['id'] == $user['role'] ? 'selected' : ''; ?>><?php echo $r['name']; ?></option>
 							<?php } ?>	
 						</select>
 					</div>
@@ -42,7 +42,14 @@
 					<div class="td"><textarea readonly class="education"><?php echo $user['education']; ?></textarea></div>
 					<div class="td"><input type="checkbox" name="medic" <?php echo $user['medic'] == 1 ? 'checked' :'' ?> class="medic"></div>
 					<div class="td"><input type="checkbox" name="dt_insert" <?php echo !empty($user['dt_insert']) ? 'checked' :'' ?> class="dt_insert"></div>
-					<div class="td"><a href="<?php echo "/users/show?type=json&login_user={$user['login']}"; ?>" class="button more">Подробнее</a><button>Сохранить</button></div>
+					<div class="td">
+						<a href="<?php echo "/users/show?type=json&login_user={$user['login']}"; ?>" class="button more">Подробнее</a>
+						<button>Сохранить</button>
+						<?php if ($user['role'] == 3): ?>
+
+							<a href="/users/show?type=expert_work&login_user=<?php echo $user['login'] ?>" data-login="<?php echo $user['login'] ?>" class="button expert_purpose">Назначить проверяющим</a>	
+						<?php endif ?>
+					</div>
 				</form>
 			<?php } ?>
 		</div>
@@ -73,4 +80,22 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div id="expert">
+	<button class="close-expert">X</button>
+	<div class="wrap_popup">
+		<form id="purpose_expert" class="edit_form" action="javascript:void(null);"  data-href="/users/edit?action=purpose_expert">
+			<h3>Разрешить проверять</h3>
+			<input id="login_name" type="text" name="login">
+			<table>
+				<?php foreach ($data['events'] as $e => $event): ?>
+					<tr>
+						<td class="right"><input id="<?="event$e"?>" type="checkbox" name="<?="events[$e]"?>" value="<?=$e?>"></td>
+						<td class="left"><label for="<?="event$e"?>"><?="$e $event"?></label></td>
+					</tr>
+				<?php endforeach ?>
+			</table>
+			<button>Сохранить</button>
+		</form>
+</div>
 </div>

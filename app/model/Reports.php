@@ -17,7 +17,7 @@ class Reports extends Model{
 		$sort = !empty($_GET['sort']) && !empty($_GET['order']) ? " ORDER BY {$_GET['sort']} {$_GET['order']}" : " ORDER BY login ASC";
 		$u = $this->db->query("SELECT
 			u.login,
-			a.role_name,
+			r.name AS role,
 			CONCAT(u.name_f,' ',u.name_i,' ',u.name_o) AS name,
 			u.email,
 			u.phone_private,
@@ -30,6 +30,7 @@ class Reports extends Model{
 			FROM exam e
 			INNER JOIN exam_state es ON es.id = e.state_id
 			INNER JOIN access a ON a.user_login = e.login
+			INNER JOIN role r ON r.id = a.role_id
 			INNER JOIN user u ON u.login = e.login".$sort);
 		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
 			$reports['data'][] = $row;
@@ -37,7 +38,7 @@ class Reports extends Model{
 		$reports['page'] = $this->getPage();
 		$reports['title'] = array(
 				'login' => 'Логин',
-				'role_name' => 'Статус',
+				'role' => 'Статус',
 				'name' => 'ФИО',
 				'email' => 'E-mail',
 				'phone_private' => 'Тел. личный',
@@ -55,13 +56,14 @@ class Reports extends Model{
 		$r = $this->db->query("SELECT
 			ec.login,
 			CONCAT(u.name_f,' ',u.name_i,' ',u.name_o) AS name,
-			a.role_name,
+			r.name AS role,
 			COUNT(ec.login) AS count,
 			COUNT(IF(e.level = 1, 1, NULL)) AS level1,
 			COUNT(IF(e.level = 2, 2, NULL)) AS level2
 			FROM exam e
 			INNER JOIN exam_check ec ON ec.exam_id = e.id
 			INNER JOIN access a ON a.user_login = ec.login
+			INNER JOIN role r ON r.id = a.role_id
 			INNER JOIN user u ON u.login = ec.login
 			GROUP BY ec.login".$this->getSort('login'));
 		while ($row = $r->fetch(PDO::FETCH_ASSOC)) {
@@ -70,7 +72,7 @@ class Reports extends Model{
 		$reports['page'] = $this->getPage();
 		$reports['title'] = array(
 				'login' => 'Логин',
-				'role_name' => 'Статус',
+				'role' => 'Статус',
 				'name' => 'ФИО',
 				'count' => 'Общее кол-во',
 				'level1' => 'Кол-во ур-нь эксперт',
@@ -83,7 +85,7 @@ class Reports extends Model{
 		$reports['page'] = $this->getPage();
 		$reports['title'] = array(
 				'login' => 'Логин',
-				'role_name' => 'Статус',
+				'role' => 'Статус',
 				'name' => 'ФИО',
 				'email' => 'E-mail',
 				'phone_private' => 'Тел. личный',
@@ -130,13 +132,14 @@ class Reports extends Model{
 		$r = $this->db->query("SELECT
 			ec.login,
 			CONCAT(u.name_f,' ',u.name_i,' ',u.name_o) AS name,
-			a.role_name,
+			r.name AS role,
 			COUNT(ec.login) AS count,
 			COUNT(IF(e.level = 1, 1, NULL)) AS level1,
 			COUNT(IF(e.level = 2, 2, NULL)) AS level2
 			FROM exam e
 			INNER JOIN exam_check ec ON ec.exam_id = e.id
 			INNER JOIN access a ON a.user_login = ec.login
+			INNER JOIN role r ON r.id = a.role_id
 			INNER JOIN user u ON u.login = ec.login
 			GROUP BY ec.login".$sort);
 		while ($row = $r->fetch(PDO::FETCH_ASSOC)) {
@@ -145,7 +148,7 @@ class Reports extends Model{
 		$reports['page'] = $this->getPage();
 		$reports['title'] = array(
 				'login' => 'Логин',
-				'role_name' => 'Статус',
+				'role' => 'Статус',
 				'name' => 'ФИО',
 				'email' => 'E-mail',
 				'phone_private' => 'Тел. личный',

@@ -260,9 +260,9 @@ class Attestation extends Model{
 			# Если аттестуемый, то делаем проверку на его присутствие в списке expert_work. Если проверка указанного случая разрешена, то выдаем проверки, иначе нет.
 			# Если администратор, то выводим всех
 			INNER JOIN (
-			SELECT attest_id FROM expert_work WHERE login = '{$this->user['login']}' AND enable = 1 AND (SELECT role_name FROM access WHERE user_login = '{$this->user['login']}') = 'Аттестуемый'
+			SELECT attest_id FROM expert_work WHERE login = '{$this->user['login']}' AND enable = 1 AND (SELECT role_id FROM access WHERE user_login = '{$this->user['login']}') = 2
 			UNION
-			SELECT attest_id FROM exam WHERE (SELECT role_name FROM access WHERE user_login = '{$this->user['login']}') = 'Администратор' GROUP BY attest_id
+			SELECT attest_id FROM exam WHERE (SELECT role_id FROM access WHERE user_login = '{$this->user['login']}') = 'Администратор' GROUP BY attest_id
 		) t1 ON t1.attest_id = e.attest_id
 		# Проверяем присутствие данного юзера в списке проверивших раннее
 		LEFT JOIN (SELECT exam_id FROM exam_check WHERE login = '{$this->user['login']}') t2 ON t2.exam_id = e.id

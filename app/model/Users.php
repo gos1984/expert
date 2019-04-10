@@ -8,7 +8,7 @@ class Users extends Model{
 	use Defense, Page, Role, Sort;
 	private $selectUsers = "SELECT
 	u.login,
-	a.role_name,
+	r.id AS role,
 	u.name_f,
 	u.name_i,
 	u.name_o,
@@ -25,6 +25,7 @@ class Users extends Model{
 	DATE_FORMAT(bl.dt_insert,'%d.%m.%Y') AS dt_insert
 	FROM user u
 	INNER JOIN access a ON a.user_login = u.login
+	INNER JOIN role r ON a.role_id = r.id
 	LEFT JOIN black_list bl ON bl.login = u.login";
 
 	public function __construct() {
@@ -32,22 +33,25 @@ class Users extends Model{
 	}
 
 	public function getUsersAll() {
+
 		$u = $this->db->query($this->selectUsers.$this->getSort('login'));
 		while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
 			$user['user'][] = $row;
 		}
+
 		$user['page'] = $this->getPage();
 		$user['role'] = $this->getRole();
 		$user['title'] =  array(
-				'login' 		=> 'Логин',
-				'name_f'		=> 'ФИО',
-				'role_name'		=> 'Статус',
-				'email'			=> 'E-mail',
-				'position' 		=> 'Должность',
-				'education' 	=> 'Образование',
-				'medic' 		=> 'Наличие мед. образования',
-				'dt_insert' 	=> 'Черный список'
+			'login' 		=> 'Логин',
+			'name_f'		=> 'ФИО',
+			'role'		=> 'Статус',
+			'email'			=> 'E-mail',
+			'position' 		=> 'Должность',
+			'education' 	=> 'Образование',
+			'medic' 		=> 'Наличие мед. образования',
+			'dt_insert' 	=> 'Черный список'
 		);
+		$user['events'] = $this->getEvents();
 		return $user;
 	}
 
@@ -59,6 +63,7 @@ class Users extends Model{
 			u.email,
 			u.phone_private,
 			u.phone_work,
+			e.purpose,
 			e.enable 
 			FROM expert_work e
 			INNER JOIN user u ON e.login = u.login".$this->getSort('name_f'));
@@ -69,15 +74,30 @@ class Users extends Model{
 		$user['page'] = $this->getPage();
 		$user['role'] = $this->getRole();
 		$user['title'] = array(
-				'name_f'		=> '№ случая',
-				'login' 		=> 'Логин',
-				'fio' 			=> 'ФИО',
-				'email' 		=> 'E-mail',
-				'phone_private' => 'Телефон личный',
-				'phone_work' 	=> 'Телефон рабочий',
-				'enable'		=> 'Разрешение проверять случай',
-			);
+			'name_f'		=> '№ случая',
+			'login' 		=> 'Логин',
+			'fio' 			=> 'ФИО',
+			'email' 		=> 'E-mail',
+			'phone_private' => 'Телефон личный',
+			'phone_work' 	=> 'Телефон рабочий',
+			'purpose' 		=> 'Назначение',
+			'enable'		=> 'Разрешение проверять случай',
+		);
 		return $user;
+	}
+
+	public function getExpertWork($login) {
+		$req = "SELECT attest_id FROM expert_work WHERE login = '$login'";
+		if($this->db->query($req)->fetch(PDO::FETCH_BOUND)) {
+			$e = $this->db->query($req);
+
+			while ($row = $e->fetch(PDO::FETCH_ASSOC)) {
+				$expert_work[] = $row['attest_id'];
+			}
+			return $expert_work;
+		}
+		return null;
+		
 	}
 
 	public function getDocuments() {
@@ -110,14 +130,14 @@ class Users extends Model{
 			$login = $this->defenseSQL($_POST['login']);
 			$email = $this->defenseSQL($_POST['email']);
 			$medic = isset($_POST['medic']) ? 1 : 0;
-			$role_name = $this->defenseSQL($_POST['role_name']);
+			$role = $this->defenseSQL($_POST['role']);
 			$this->db->exec("UPDATE user SET 
 				medic = $medic, 
 				email = $email
 				WHERE login = $login");
 
 			$this->db->exec("UPDATE access SET
-				role_name = $role_name
+				role_id = $role
 				WHERE user_login = $login");
 			if(!empty($_POST['result'])) {
 				$login_check = $this->defenseStr($_SESSION['login']);
@@ -142,12 +162,36 @@ class Users extends Model{
 			}
 			break;
 			case 'create_expert':
-				$login = $this->defenseSQL($_POST['login']);
-				$attest_id = $this->defenseStr($_POST['attest_id']);
-				$medic = isset($_POST['enable']) ? 1 : 0;
-				$this->db->exec("UPDATE expert_work SET enable = $medic WHERE login = $login AND attest_id = $attest_id");
+			$login = $this->defenseSQL($_POST['login']);
+			$attest_id = $this->defenseStr($_POST['attest_id']);
+			$medic = isset($_POST['enable']) ? 1 : 0;
+			$this->db->exec("UPDATE expert_work SET enable = $medic WHERE login = $login AND attest_id = $attest_id");
+			break;
+			case 'purpose_expert':
+			
+			$login = $this->defenseSQL($_POST['login']);
+			$this->db->exec("DELETE FROM expert_work WHERE login = $login");
+			foreach ($_POST['events'] as $e => $event) {
+				$attest = (int) $e;
+				$this->db->exec("INSERT INTO expert_work(login,attest_id,purpose, enable) VALUES($login, $attest, 1, 1)");
+			}
+			
 			break;
 		}
+	}
+
+	public function getEvents() {
+		$e = $this->db->query("SELECT
+			a.id,
+			CONCAT(m.name, ' / ', s.name) AS event
+			FROM attest a
+			INNER JOIN modality m ON m.id = a.ssapm_id
+			INNER JOIN ssapm s ON s.id = a.ssapm_id
+			");
+		while ($row = $e->fetch(PDO::FETCH_ASSOC)) {
+			$expert[$row['id']] = $row['event'];
+		}
+		return $expert;
 	}
 
 	public function getShow() {
@@ -160,7 +204,7 @@ class Users extends Model{
 					'name_f' => 'Фамилия',
 					'name_i' => 'Имя',
 					'name_o' => 'Отчество',
-					'role_name' => 'Статус',
+					'role' => 'Статус',
 					'email' => 'E-mail',
 					'dt_reg' => 'Дата регистрации',
 					'phone_private' => 'Телефон личный',
@@ -187,6 +231,10 @@ class Users extends Model{
 					'doc' => $this->getDocuments(),
 				);
 				echo json_encode($user, true);
+				break;
+				case 'expert_work':
+				$login = $this->defenseStr($_GET['login_user']);
+				echo json_encode($this->getExpertWork($login), true);
 				break;
 			}
 			

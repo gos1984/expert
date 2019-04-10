@@ -6,7 +6,11 @@ return array(
 	"^registr$" => "account/registr",
 	"^forgot$" => "account/forgot",
 	"^logout$" => "account/logout",
+	"^entry$" => "account/entry",
 	"^show\?.*$" => "account/show",
+	"^confirm\?.*$" => "account/confirm",
+	"^password\?.*$" => "account/password",
+	"^password$" => "account/password",
 
 	"^attestation(\/$|\?.*$|$)" => "attestation/index",
 	"^attestation/show\?.*$" => "attestation/show",
