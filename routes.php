@@ -15,6 +15,7 @@ return array(
 	"^attestation(\/$|\?.*$|$)" => "attestation/index",
 	"^attestation/show\?.*$" => "attestation/show",
 	"^attestation/edit\?.*$" => "attestation/edit",
+	"^attestation/task\?.*$" => "attestation/task",
 
 	"^results(\/$|\?.*$|$)" => "attestation/results",
 	"^results/show\?.*$" => "attestation/show",

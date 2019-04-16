@@ -17,15 +17,20 @@ class Account extends Model{
 
 			$login = $this->defenseStr($_POST['login']);
 			$user = $this->db->query("SELECT
-				u.login, u.password, u.name_f, u.name_i, u.name_o, r.name AS role, u.active_hex, u.medic
+				u.login, u.password, u.name_f, u.name_i, u.name_o, r.name AS role, u.active_hex, u.medic, bl.dt_insert AS black_list
 				FROM user u
 				INNER JOIN access a ON a.user_login = u.login
 				INNER JOIN role r ON a.role_id = r.id
-				WHERE login = '{$login}'")->fetch(PDO::FETCH_ASSOC);
+                LEFT JOIN black_list bl ON bl.login = u.login
+				WHERE u.login = '{$login}'")->fetch(PDO::FETCH_ASSOC);
 
 			if(!empty($user)) {
 				if(isset($user['active_hex'])) {
 					$data = "Аккаунт не активирован, активируйте аккаунт и попробуйте снова!";
+					return $data;
+				}
+				if(isset($user['black_list'])) {
+					$data = "Аккаунт занесён в чёрный список!";
 					return $data;
 				}
 				if(password_verify($_POST['password'],$user['password'])) {

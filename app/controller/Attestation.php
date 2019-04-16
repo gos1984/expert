@@ -18,25 +18,28 @@ class Attestation extends Controller{
 	}
 	
 
-	function results() {
+	public function results() {
 		$data = $this->model->getResultsAll();
 		$this->view->output("results",$data);
 	}
 
-	function check() {
+	public function check() {
 		$data = $this->model->getCheck();
 		$this->view->output("check",$data);
 	}
 
-	function show() {
+	public function show() {
 		$this->model->getShow();
 	}
 
-	function edit() {
+	public function edit() {
 		$this->model->setAttests($_GET['action']);
 	}
-}
 
+	public function task() {
+		$this->model->setPublicAttests($_GET['expert'],$_GET['org']);
+	}
+}
 
 /*
 Событие

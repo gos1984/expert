@@ -1,14 +1,16 @@
 <?php
 namespace app\model;
-use core\Model;
+use core\{Model, Mailer};
 use core\traits\{Defense,Modality,Ssapm,Page, Sort};
 use PDO;
 
 class Attestation extends Model{
 	use Defense, Modality, Ssapm, Page, Sort;
-	
+	private $mail;
+
 	public function __construct() {
 		parent::__construct();
+		$this->mail = new Mailer();
 	}
 
 	public function getAttestsAll() {
@@ -110,17 +112,17 @@ class Attestation extends Model{
 			$attests['attest'][] = $row;
 		}
 
-			$attests['page'] = $this->getPage($this->user['login'], $this->user['role']);
-			$attests['title'] = array(
-				'attest_id' 		=> '№ теста',
-				'name'				=> 'Тема',
-				'modality'			=> 'Модальность',
-				'ssapm'				=> 'Системы стратификации и параметры измерения',
-				'image_max_count' 	=> 'Количество картинок',
-				'level' 			=> 'Уровень',
-				'price' 			=> 'Цена',
-				'active_days' 		=> 'Срок действия сертификации (в днях)'
-			);
+		$attests['page'] = $this->getPage($this->user['login'], $this->user['role']);
+		$attests['title'] = array(
+			'attest_id' 		=> '№ теста',
+			'name'				=> 'Тема',
+			'modality'			=> 'Модальность',
+			'ssapm'				=> 'Системы стратификации и параметры измерения',
+			'image_max_count' 	=> 'Количество картинок',
+			'level' 			=> 'Уровень',
+			'price' 			=> 'Цена',
+			'active_days' 		=> 'Срок действия сертификации (в днях)'
+		);
 		return $attests;
 	}
 
@@ -174,9 +176,9 @@ class Attestation extends Model{
 			
 			$result['image'][$i] = $row;
 			$img_result = $this->db->query("SELECT
-			result, 
-			expert_comment
-			FROM exam_image_result WHERE image_id = {$row['id']}");
+				result, 
+				expert_comment
+				FROM exam_image_result WHERE image_id = {$row['id']}");
 			
 			while ($row1 = $img_result->fetch(PDO::FETCH_ASSOC)) {
 				$result['image'][$i]['result'][] = $row1;
@@ -192,7 +194,7 @@ class Attestation extends Model{
 			FROM exam_check
 			WHERE exam_id = $id");
 		while($row = $expert_comment->fetch(PDO::FETCH_ASSOC)) {
-		$result['expert_comment'][] = $row;
+			$result['expert_comment'][] = $row;
 		}
 
 		$result['title'] = array(
@@ -235,13 +237,13 @@ class Attestation extends Model{
 
 		$results['page'] = $this->getPage($this->user['login'],$this->user['role']);
 		$results['title'] = array(
-				'attest_id' => '№ теста',
-				'dt_create'	=> 'Дата тестирования',
-				'state_id'	=> 'Статус',
-				'result'	=> 'Результат',
-				'dt_public' 	=> 'Дата публикации',
-				'dt_end' 	=> 'Срок действия сертификации до'
-			);
+			'attest_id' => '№ теста',
+			'dt_create'	=> 'Дата тестирования',
+			'state_id'	=> 'Статус',
+			'result'	=> 'Результат',
+			'dt_public' 	=> 'Дата публикации',
+			'dt_end' 	=> 'Срок действия сертификации до'
+		);
 		return $results;
 	}
 
@@ -257,19 +259,19 @@ class Attestation extends Model{
 			INNER JOIN attest a ON a.id=e.attest_id
 			INNER JOIN modality m ON m.id = a.modality_id
 			INNER JOIN ssapm s ON s.id = a.ssapm_id
-			# Если аттестуемый, то делаем проверку на его присутствие в списке expert_work. Если проверка указанного случая разрешена, то выдаем проверки, иначе нет.
+			# Если эксперт, то делаем проверку на его присутствие в списке expert_work. Если проверка указанного случая разрешена, то выдаем проверки, иначе нет.
 			# Если администратор, то выводим всех
 			INNER JOIN (
-			SELECT attest_id FROM expert_work WHERE login = '{$this->user['login']}' AND enable = 1 AND (SELECT role_id FROM access WHERE user_login = '{$this->user['login']}') = 2
+			SELECT attest_id FROM expert_work WHERE login = '{$this->user['login']}' AND enable = 1 AND (SELECT role_id FROM access WHERE user_login = '{$this->user['login']}') = 3
 			UNION
 			SELECT attest_id FROM exam WHERE (SELECT role_id FROM access WHERE user_login = '{$this->user['login']}') = 'Администратор' GROUP BY attest_id
-		) t1 ON t1.attest_id = e.attest_id
+			) t1 ON t1.attest_id = e.attest_id
 		# Проверяем присутствие данного юзера в списке проверивших раннее
-		LEFT JOIN (SELECT exam_id FROM exam_check WHERE login = '{$this->user['login']}') t2 ON t2.exam_id = e.id
-		WHERE ((e.state_id=2)OR(e.state_id=3))AND(DATEDIFF(NOW(), e.dt_create) <= (SELECT days_wait_until_puplic FROM setup)) AND (e.login<>'{$this->user['login']}') AND t2.exam_id IS NULL
-		ORDER BY random
-		LIMIT 1
-		");
+			LEFT JOIN (SELECT exam_id FROM exam_check WHERE login = '{$this->user['login']}') t2 ON t2.exam_id = e.id
+			WHERE ((e.state_id=2)OR(e.state_id=3))AND(DATEDIFF(NOW(), e.dt_create) <= (SELECT days_wait_until_puplic FROM setup)) AND (e.login<>'{$this->user['login']}') AND t2.exam_id IS NULL
+			ORDER BY random
+			LIMIT 1
+			");
 		while ($row = $c->fetch(PDO::FETCH_ASSOC)) {
 			$check['check'][] = $row;
 		}
@@ -383,6 +385,18 @@ class Attestation extends Model{
 
 			$ins = $this->db->exec("INSERT INTO exam_check(exam_id,login,dt_check,result,expert_comment) VALUES ($exam,'$user_result',NOW(),$result,$expert_comment)");
 
+			$user = $this->db->query("SELECT
+				CONCAT(m.name,'/',s.name) AS theme,
+				CONCAT(u.name_i,' ',u.name_o) AS name,
+				email
+				FROM exam e
+				INNER JOIN user u ON u.login = e.login
+				INNER JOIN attest a ON a.id = e.attest_id
+				INNER JOIN modality m ON m.id = a.modality_id
+				INNER JOIN ssapm s ON s.id = a.ssapm_id
+				WHERE e.id = $exam")->fetch(PDO::FETCH_ASSOC);
+
+			$this->mail->sendCheck($user['theme'],$user['email'],$user['name']);
 			
 			if($upd || $ins) {
 				$this->db->commit();
@@ -391,5 +405,72 @@ class Attestation extends Model{
 			}
 		}
 	}
+
+	public function setPublicAttests($expert,$org) {
+		if($expert == 'medexpertradiology' && $org == 'npcmr') {
+			
+			$updateReasult = $this->db->exec("UPDATE exam e
+				SET e.state_id = 4,
+				e.result = (SELECT
+				ROUND(AVG(result))
+				FROM exam_check
+				WHERE exam_id = e.id),
+				dt_public = NOW()
+				WHERE DATEDIFF(NOW(), e.dt_create) > (SELECT
+				days_wait_until_puplic
+				FROM setup)
+				AND e.result IS NULL
+				AND e.state_id = 3
+				AND e.id = e.id");
+
+			$insertSertif = $this->db->exec("INSERT INTO sertif(exam_id, modality_id,ssapm_id, date_start, date_end, public_link)
+				SELECT
+				e.id,
+				a.modality_id,
+				a.ssapm_id,
+				e.dt_public,
+				ADDDATE(e.dt_public,IF(e.level = 1, a.active_days_level1, a.active_days_level2)),
+				u.medic
+				FROM exam e
+				INNER JOIN attest a ON a.id = e.attest_id
+				INNER JOIN user u ON u.login = e.login
+				WHERE e.state_id = 4 
+				AND e.result = 1 
+				AND e.id 
+				AND NOT EXISTS(SELECT exam_id FROM sertif WHERE exam_id = e.id)");
+
+			$insertExpertWork = $this->db->exec("INSERT INTO expert_work(login,attest_id,purpose,enable)
+				SELECT
+				e.login,
+				e.attest_id,
+				0,
+				0
+				FROM exam e WHERE e.level = 2 
+				AND e.state_id = 4 
+				AND e.result = 1 
+				AND NOT EXISTS(SELECT attest_id FROM expert_work WHERE attest_id = e.attest_id)");
+
+			$u = $this->db->query("SELECT
+				CONCAT(m.name,'/',s.name) AS theme,
+				CONCAT(u.name_i,' ',u.name_o) AS name,
+				u.email,
+				e.level,
+				e.result
+				FROM exam e
+				INNER JOIN user u ON u.login = e.login
+				INNER JOIN attest a ON a.id = e.attest_id
+				INNER JOIN modality m ON m.id = a.modality_id
+				INNER JOIN ssapm s ON s.id = a.ssapm_id
+				WHERE  DATEDIFF(NOW(), e.dt_public) < 1");
+
+			while ($row = $u->fetch(PDO::FETCH_ASSOC)) {
+				$this->mail->sendPublicAttestation($row['theme'],$row['email'],$row['name'],$row['level'],$row['result']);
+			}
+
+			file_put_contents(ROOT."/result.html", date("d.m.Y H:i:s")." update - $updateReasult, sertif - $insertSertif, expert_work - $insertExpertWork  <br/>", FILE_APPEND);
+		}
+	}
 }
 ?>
+
+

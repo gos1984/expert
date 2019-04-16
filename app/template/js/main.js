@@ -176,7 +176,9 @@ if(!isEmpty($('.validate'))) {
 			});
 		}
 
-		if(e.target.id === 'password_repeat') {
+		console.log($('#password_repeat').value !== $('#password').value);
+
+		if((e.target.id === 'password_repeat')  || (e.target.id === 'password')) {
 			if($('#password_repeat').value !== $('#password').value) {
 				$('.error-password').textContent =  'Пароли не совпадают';
 				$('#password_repeat').setCustomValidity('Пароли не совпадают');

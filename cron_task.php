@@ -8,6 +8,9 @@ if(isset($_GET['expert']) && isset($_GET['org'])) {
 		$dbh->query("SET wait_timeout=9999;");
 		$dbh->exec("SET CHARACTER SET utf8");
 
+
+
+die();
 		$updateReasult = $dbh->exec("UPDATE exam e
 			SET e.state_id = 4,
 			e.result = (SELECT

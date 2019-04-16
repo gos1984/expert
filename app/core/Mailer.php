@@ -50,22 +50,30 @@ class Mailer {
 		<a href=\"http://www.attested.npcmr.ru\" target=\"_blank\">medexpert.ru</a></p>";
 	}
 
-	public function sendResult($id,$email,$name,$patron,$file) {
+	public function sendCheck($theme,$email,$name) {
+		$this->mail->setFrom('npcmr-webinar@yandex.ru', 'МедЭксперт');
+		$this->mail->CharSet = "utf-8";
+		$this->mail->addAddress($email);
+		$this->mail->isHTML(true);
+		$this->mail->Subject  = "Проверка вашей аттестации";
+		$this->mail->Body = "Уважаемый (ая) $name,
+		<p>Вашу аттестацию по теме $theme, проверил эксперт. С результатами проверки можно ознакомиться во вкладке результаты на сайте <a href=\"http://www.attested.npcmr.ru\" target=\"_blank\">medexpert.ru</a></p>
+		<p>С уважением,<br/>
+		Команда МедЭксперт<br/>
+		<a href=\"http://www.attested.npcmr.ru\" target=\"_blank\">medexpert.ru</a></p>";
+	}
+
+	public function sendPublicAttestation($theme,$email,$name,$level,$result) {
 		$this->mail->setFrom('npcmr-webinar@yandex.ru', 'Всероссийский рейтинг отделений лучевой диагностики');
 		$this->mail->CharSet = "utf-8";
 		$this->mail->addAddress($email);
 		$this->mail->isHTML(true);
-		$this->mail->addStringAttachment($file,'result.pdf');
-		$this->mail->Subject  = "Результат анкетирования";
-		$this->mail->Body = "Уважаемый (ая) $name $patron,
-		<p>Благодарим вас за заполнение анкеты и участие во «Всероссийском рейтинге отделений лучевой диагностики»!</p>
-		<p>Результаты вашего анкетирования в приложении.</p>
-		<p>К 30 апреля мы подведем итоги, подготовим рейтинг лучших отделений и обязательно пригласим вас ознакомиться с ним.</p>
-		<p>Обращаем ваше внимание на то, что для публикации рейтинга будут использованы следующие данные: название организации, тип, город и модальности, имеющиеся в отделении. Прочая информация, предоставленная вами в анкете, не будет размещена в открытом доступе.</p>
-		<p>Если у вас остались вопросы, пожалуйста, обращайтесь info@topld.ru</p>
+		$this->mail->Subject  = "Публикация вашей аттестации";
+		$this->mail->Body = "Уважаемый (ая) $name,
+		<p>Ваша аттестация по теме $theme, опубликована.</p>
 		<p>С уважением,<br/>
-		Команда МРО РОРР
-		</p>";
+		Команда МедЭксперт<br/>
+		<a href=\"http://www.attested.npcmr.ru\" target=\"_blank\">medexpert.ru</a></p>";
 	}
 }
 ?>

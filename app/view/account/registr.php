@@ -28,6 +28,7 @@
 		<label for="#password_repeat">
 			<span>Повторите пароль</span>
 			<input id="password_repeat" type="password" name="password_repeat" required="" minlength="6">
+			<span class="error error-password"></span>
 		</label>
 		<label for="conf" class="confidential">
 			<input id="conf" type="checkbox" name="conf" required="">
